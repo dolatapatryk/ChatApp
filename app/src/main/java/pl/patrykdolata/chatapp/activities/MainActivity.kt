@@ -1,8 +1,7 @@
 package pl.patrykdolata.chatapp.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import io.socket.client.IO
+import androidx.appcompat.app.AppCompatActivity
 import io.socket.client.Socket
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
@@ -16,23 +15,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
 
         connectButton.setOnClickListener {
-            try {
-//                socket = IO.socket("http://10.0.2.2:5000")
-                socket = IO.socket("https://blooming-taiga-79616.herokuapp.com")
-            } catch (e: Exception) {
-                println(e.message)
-            }
-            socket.on(Socket.EVENT_CONNECT) {
-                println("connected");
-                println(socket.connected())
-                socket.emit("test", "patryk connected")
-            }
-            socket.connect()
+//            try {
+////                socket = IO.socket("http://10.0.2.2:5000")
+//                socket = IO.socket("https://blooming-taiga-79616.herokuapp.com")
+//            } catch (e: Exception) {
+//                println(e.message)
+//            }
+//            socket.on(Socket.EVENT_CONNECT) {
+//                println("connected");
+//                println(socket.connected())
+//                socket.emit("test", "patryk connected")
+//            }
+//            socket.connect()
         }
 
         emitButton.setOnClickListener {
-            socket.emit("test", "patryk")
-            socket.emit("test2", "patryk2")
+//            socket.emit("test", "patryk")
+//            socket.emit("test2", "patryk2")
         }
     }
 

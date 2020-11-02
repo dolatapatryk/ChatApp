@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.patrykdolata.chatapp.R
+import pl.patrykdolata.chatapp.services.SocketService
 
 class LoginActivity : AppCompatActivity() {
 
@@ -16,6 +17,16 @@ class LoginActivity : AppCompatActivity() {
         registerTextView.setOnClickListener {
             goToRegister()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketService.disconnect()
     }
 
     private fun goToRegister() {

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "389156158445",
+    "firebase_url": "https://chat-app-6e83b.firebaseio.com",
+    "project_id": "chat-app-6e83b",
+    "storage_bucket": "chat-app-6e83b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389156158445:android:43a6f70124115083cbc5e4",
+        "android_client_info": {
+          "package_name": "pl.patrykdolata.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389156158445-6allefaqkpomuckvbaf6j3queeeva1j8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAOd6L1qbGsFeyZLHMKjmIkpiGIE79e7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389156158445-6allefaqkpomuckvbaf6j3queeeva1j8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
