@@ -1,42 +1,51 @@
 package pl.patrykdolata.chatapp.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import io.socket.client.Socket
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var socket: Socket
+    private lateinit var auth: FirebaseAuth
+    private var user: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        connectButton.setOnClickListener {
-//            try {
-////                socket = IO.socket("http://10.0.2.2:5000")
-//                socket = IO.socket("https://blooming-taiga-79616.herokuapp.com")
-//            } catch (e: Exception) {
-//                println(e.message)
-//            }
-//            socket.on(Socket.EVENT_CONNECT) {
-//                println("connected");
-//                println(socket.connected())
-//                socket.emit("test", "patryk connected")
-//            }
-//            socket.connect()
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
+
+        clickButton.setOnClickListener {
+            textView.setText(auth.currentUser?.email)
+            println(auth.currentUser)
+            println(auth.currentUser?.email)
+            println(auth.currentUser?.isEmailVerified)
+            println(auth.currentUser?.uid)
         }
 
-        emitButton.setOnClickListener {
-//            socket.emit("test", "patryk")
-//            socket.emit("test2", "patryk2")
+        logoutButton.setOnClickListener {
+            logout()
         }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        socket.disconnect()
+        println("destroy main")
+    }
+
+    private fun logout() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        Handler().postDelayed(
+            {startActivity(intent)},
+            10
+        )
     }
 }

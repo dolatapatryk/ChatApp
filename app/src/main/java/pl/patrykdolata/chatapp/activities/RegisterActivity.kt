@@ -3,6 +3,7 @@ package pl.patrykdolata.chatapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.register_activity.*
@@ -46,6 +47,8 @@ class RegisterActivity : AppCompatActivity() {
                     val id = auth.currentUser?.uid
                     val user = User(id.orEmpty(), username, email, phone)
                     SocketService.emit(SocketUtils.registerEvent, user)
+//                    Toast.makeText(this, "register success", Toast.LENGTH_LONG)
+//                        .show()
                 } else {
                     println(task.exception)
                 }

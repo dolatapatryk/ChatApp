@@ -9,4 +9,10 @@ class ChatApplication : Application() {
         super.onCreate()
         SocketService.connect()
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        SocketService.disconnect()
+        println("::::disconnected")
+    }
 }

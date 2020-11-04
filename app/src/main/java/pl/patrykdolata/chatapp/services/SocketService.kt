@@ -13,7 +13,6 @@ object SocketService {
     private lateinit var socketId: String;
 
     init {
-        println("init socket service")
         try {
             socket = IO.socket(socketUri)
         } catch (e: URISyntaxException) {
@@ -23,10 +22,7 @@ object SocketService {
 
     fun connect() {
         socket.on(Socket.EVENT_CONNECT) {
-            println("connected")
-            println("socket.connected: " + socket.connected() + " id: " + socket.id())
             socketId = socket.id()
-            socket.emit("test", "patryk xddd")
         }
         socket.connect()
     }
@@ -39,5 +35,13 @@ object SocketService {
 
     fun emit(event: String, vararg arg: Any) {
         socket.emit(event, *arg.map { a -> JsonUtils.toJson(a) }.toTypedArray())
+    }
+
+    fun getSocketId(): String {
+        return socketId;
+    }
+
+    private fun isConnected(): Boolean {
+        return socket.connected()
     }
 }

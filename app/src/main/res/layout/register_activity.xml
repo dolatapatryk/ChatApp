@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Login"
+                android:textColor="@color/colorText"
                 android:inputType="text"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -40,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="E-mail"
+                android:textColor="@color/colorText"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -55,6 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Telefon"
+                android:textColor="@color/colorText"
                 android:inputType="phone"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -70,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Hasło"
+                android:textColor="@color/colorText"
                 android:inputType="textPassword"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -85,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Potwierdź hasło"
+                android:textColor="@color/colorText"
                 android:inputType="textPassword"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
