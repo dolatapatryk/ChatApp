@@ -7,5 +7,6 @@
     <color name="colorText">#FFFFFF</color>
     <color name="colorTextHint">#51D8C7</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
     <drawable name="grey">#808080</drawable>
 </resources>

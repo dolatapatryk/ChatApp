@@ -15,10 +15,13 @@
     <string name="register">Rejestracja</string>
     <string name="logout">Wyloguj</string>
     <string name="friends">Znajomi</string>
-    <string name="pending">Oczekiwanie</string>
+    <string name="pending">Zaproszenia</string>
     <string name="no_friends">Twoja lista znajomych jest pusta</string>
     <string name="no_search_result">Nie znaleziono wyników</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_conversations">Brak konwersacji</string>
+    <string name="conversationsFragmentTitle">Konwersacje</string>
+    <string name="friedsFragmentTitle">Znajomi</string>
 </resources>

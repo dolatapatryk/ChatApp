@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75dp"
+    android:orientation="vertical"
     android:layoutDirection="locale"
     android:background="@drawable/border"
     android:padding="16dip"
@@ -14,19 +15,20 @@
         android:id="@+id/friendName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginStart="8dp"
         android:gravity="center_vertical|end"
-        tools:text="Text Line Item"
         android:textColor="@color/black"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:textSize="16sp"
+        tools:text="Text Line Item" />
 
-    <Button
-        android:id="@+id/acceptButton"
+    <TextView
+        android:id="@+id/lastMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:background="@color/colorTextHint"
-        android:layout_alignParentEnd="true"
-        android:text="Akceptuj" />
-</RelativeLayout>
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical|end"
+        android:textColor="@drawable/grey"
+        android:textSize="16sp"
+        tools:text="Text Line Item" />
+
+</LinearLayout>

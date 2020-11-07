@@ -11,7 +11,7 @@ import pl.patrykdolata.chatapp.models.Friend
 class FriendsAdapter(private val friends: Array<Friend>) :
     RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder>() {
 
-    class FriendsViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -21,8 +21,7 @@ class FriendsAdapter(private val friends: Array<Friend>) :
     }
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
-        println(friends[position].displayName)
-        holder.view.friendName.text = friends[position].displayName
+        holder.itemView.friendName.text = friends[position].displayName
     }
 
     override fun getItemCount() = friends.size

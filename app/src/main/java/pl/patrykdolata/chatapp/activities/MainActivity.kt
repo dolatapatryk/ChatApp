@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.PageAdapter
+import pl.patrykdolata.chatapp.fragments.ConversationsFragment
 import pl.patrykdolata.chatapp.fragments.FriendsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 //        auth = FirebaseAuth.getInstance()
 //        user = auth.currentUser
 
-        mainToolbar.title = "jebać stare baby"
+        mainToolbar.title = "ChatApp"
         setSupportActionBar(mainToolbar)
 
         setupViewPager()
@@ -61,8 +62,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager,
             FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         )
-        adapter.addFragment(FriendsFragment())
-//        adapter.addFragment()
+        adapter.addFragment(ConversationsFragment(), getString(R.string.conversationsFragmentTitle))
+        adapter.addFragment(FriendsFragment(), getString(R.string.friedsFragmentTitle))
         viewPager.adapter = adapter
 
         tabs.setupWithViewPager(viewPager)

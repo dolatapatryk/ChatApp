@@ -30,7 +30,7 @@ class FriendsFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.friends_fragment, container, false)
         initFieldsFromView(view)
 
-//        progressBar.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
 
         pendingRecyclerView.layoutManager = LinearLayoutManager(activity)
         friendsRecyclerView.layoutManager = LinearLayoutManager(activity)
