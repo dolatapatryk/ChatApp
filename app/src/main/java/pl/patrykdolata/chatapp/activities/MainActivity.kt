@@ -3,36 +3,31 @@ package pl.patrykdolata.chatapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import androidx.fragment.app.FragmentPagerAdapter
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
+import pl.patrykdolata.chatapp.adapters.PageAdapter
+import pl.patrykdolata.chatapp.fragments.FriendsFragment
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private var user: FirebaseUser? = null
+//    private lateinit var auth: FirebaseAuth
+//    private var user: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        auth = FirebaseAuth.getInstance()
-        user = auth.currentUser
+//        auth = FirebaseAuth.getInstance()
+//        user = auth.currentUser
 
-        clickButton.setOnClickListener {
-            textView.setText(auth.currentUser?.email)
-            println(auth.currentUser)
-            println(auth.currentUser?.email)
-            println(auth.currentUser?.isEmailVerified)
-            println(auth.currentUser?.uid)
-        }
+        mainToolbar.title = "jebać stare baby"
+        setSupportActionBar(mainToolbar)
 
-        logoutButton.setOnClickListener {
-            logout()
-        }
-
+        setupViewPager()
     }
 
     override fun onDestroy() {
@@ -40,12 +35,36 @@ class MainActivity : AppCompatActivity() {
         println("destroy main")
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.logoutAction -> logout()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun logout() {
-        auth.signOut()
+//        auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         Handler().postDelayed(
-            {startActivity(intent)},
+            { startActivity(intent) },
             10
         )
+    }
+
+    private fun setupViewPager() {
+        val adapter = PageAdapter(
+            supportFragmentManager,
+            FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+        )
+        adapter.addFragment(FriendsFragment())
+//        adapter.addFragment()
+        viewPager.adapter = adapter
+
+        tabs.setupWithViewPager(viewPager)
     }
 }

@@ -13,7 +13,6 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.start_activity)
 
         val mainIntent = Intent(this, LoginActivity::class.java)
-        supportActionBar?.hide()
 
         // todo - get logged user
 
@@ -22,7 +21,7 @@ class StartActivity : AppCompatActivity() {
 
     private fun startIntent(intent: Intent) {
         Handler().postDelayed(
-            { startActivity(intent) }, 3000
+            { startActivity(intent) }, 2000
         )
     }
 }

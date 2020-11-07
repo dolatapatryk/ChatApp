@@ -10,6 +10,7 @@
         <item name="android:textColorHint">@color/colorText</item>
         <item name="colorControlNormal">@color/colorText</item>
         <item name="colorControlActivated">@color/colorText</item>
+        <item name="android:itemBackground">@color/colorBackground</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

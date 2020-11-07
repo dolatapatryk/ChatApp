@@ -12,13 +12,13 @@ import pl.patrykdolata.chatapp.services.SocketService
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+//    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        auth = FirebaseAuth.getInstance()
+//        auth = FirebaseAuth.getInstance()
 
         textInputEditTextEmail.setText("dolata.patryk1@gmail.com")
         textInputEditTextPassword.setText("patryk")
@@ -51,18 +51,19 @@ class LoginActivity : AppCompatActivity() {
         val email = textInputEditTextEmail.text.toString().trim()
         val password = textInputEditTextPassword.text.toString()
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if(task.isSuccessful) {
-                    Toast.makeText(this, "login success", Toast.LENGTH_LONG)
-                        .show()
-                    goToMainActivity()
-                } else {
-                    println(task.exception)
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
+//        auth.signInWithEmailAndPassword(email, password)
+//            .addOnCompleteListener { task ->
+//                if(task.isSuccessful) {
+//                    Toast.makeText(this, "login success", Toast.LENGTH_LONG)
+//                        .show()
+//                    goToMainActivity()
+//                } else {
+//                    println(task.exception)
+//                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG)
+//                        .show()
+//                }
+//            }
+        goToMainActivity()
     }
 
     private fun goToMainActivity() {
