@@ -24,4 +24,5 @@
     <string name="no_conversations">Brak konwersacji</string>
     <string name="conversationsFragmentTitle">Konwersacje</string>
     <string name="friedsFragmentTitle">Znajomi</string>
+    <string name="no_messages">Nie znaleziono wiadomości</string>
 </resources>

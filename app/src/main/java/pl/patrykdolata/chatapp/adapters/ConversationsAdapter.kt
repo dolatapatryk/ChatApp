@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.conversation_item.view.*
-import kotlinx.android.synthetic.main.friend_item.view.*
 import kotlinx.android.synthetic.main.friend_item.view.friendName
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.models.Conversation
 
-class ConversationsAdapter(private val conversations: Array<Conversation>) :
+class ConversationsAdapter(
+    private val conversations: Array<Conversation>,
+    private val listener: (Conversation) -> Unit
+) :
     RecyclerView.Adapter<ConversationsAdapter.ConversationsViewHolder>() {
 
     class ConversationsViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -25,6 +27,7 @@ class ConversationsAdapter(private val conversations: Array<Conversation>) :
         val conversation = conversations[position]
         holder.itemView.friendName.text = conversation.friendName
         holder.itemView.lastMessage.text = conversation.lastMessage
+        holder.itemView.setOnClickListener { listener(conversation) }
     }
 
     override fun getItemCount() = conversations.size

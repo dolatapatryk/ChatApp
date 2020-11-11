@@ -1,6 +1,8 @@
 package pl.patrykdolata.chatapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.conversations_fragment.view.*
 import pl.patrykdolata.chatapp.R
+import pl.patrykdolata.chatapp.activities.ConversationActivity
 import pl.patrykdolata.chatapp.adapters.ConversationsAdapter
 import pl.patrykdolata.chatapp.models.Conversation
 
@@ -26,8 +29,10 @@ class ConversationsFragment : Fragment() {
         initFieldsFromView(view)
 
         val conversationsAdapter = ConversationsAdapter(
-            arrayOf(Conversation("michał", "jebać stare baby"))
-        )
+            arrayOf(Conversation("michał", "jebać stare baby")),
+        ) {
+            goToConversationActivity(it)
+        }
         conversationsRecyclerView.layoutManager = LinearLayoutManager(activity)
         conversationsRecyclerView.adapter = conversationsAdapter
 
@@ -36,5 +41,14 @@ class ConversationsFragment : Fragment() {
 
     private fun initFieldsFromView(view: View) {
         conversationsRecyclerView = view.conversationsRecyclerView
+    }
+
+    private fun goToConversationActivity(conversation: Conversation) {
+        val conversationIntent = Intent(activity, ConversationActivity::class.java)
+        conversationIntent.putExtra("friendName", conversation.friendName)
+        Handler().postDelayed(
+            { startActivity(conversationIntent) },
+            10
+        )
     }
 }
