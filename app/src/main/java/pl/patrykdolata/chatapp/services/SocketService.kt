@@ -2,6 +2,7 @@ package pl.patrykdolata.chatapp.services
 
 import io.socket.client.IO
 import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import pl.patrykdolata.chatapp.utils.JsonUtils
 import java.net.URISyntaxException
 
@@ -23,6 +24,7 @@ object SocketService {
     fun connect() {
         socket.on(Socket.EVENT_CONNECT) {
             socketId = socket.id()
+            socket.off(Socket.EVENT_CONNECT)
         }
         socket.connect()
     }
@@ -37,11 +39,19 @@ object SocketService {
         socket.emit(event, *arg.map { a -> JsonUtils.toJson(a) }.toTypedArray())
     }
 
+    fun on(event: String, listener: Emitter.Listener) {
+        socket.on(event, listener)
+    }
+
+    fun off(event: String) {
+        socket.off(event)
+    }
+
     fun getSocketId(): String {
         return socketId;
     }
 
-    private fun isConnected(): Boolean {
+    fun isConnected(): Boolean {
         return socket.connected()
     }
 }

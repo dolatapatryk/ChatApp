@@ -7,6 +7,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.PageAdapter

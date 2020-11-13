@@ -29,7 +29,11 @@ class ConversationsFragment : Fragment() {
         initFieldsFromView(view)
 
         val conversationsAdapter = ConversationsAdapter(
-            arrayOf(Conversation("michał", "jebać stare baby")),
+            arrayOf(
+                Conversation("michał", "jak tam życie"),
+                Conversation("maciek", "co tam byku"),
+                Conversation("mama", "kup mleko")
+            ),
         ) {
             goToConversationActivity(it)
         }

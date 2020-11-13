@@ -5,7 +5,7 @@
     android:layout_height="75dp"
     android:orientation="vertical"
     android:layoutDirection="locale"
-    android:background="@drawable/border"
+    android:background="@drawable/item_border"
     android:padding="16dip"
     android:id="@+id/conversationItem"
     >

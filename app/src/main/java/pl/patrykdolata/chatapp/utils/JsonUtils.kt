@@ -8,6 +8,8 @@ object JsonUtils {
     private val gson: Gson = Gson()
 
     fun toJson(obj: Any): String {
+        if (obj is String)
+            return obj
         return gson.toJson(obj)
     }
 

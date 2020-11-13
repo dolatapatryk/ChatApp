@@ -24,7 +24,7 @@
                 android:id="@+id/textInputEditTextLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Login"
+                android:hint="@string/username"
                 android:textColor="@color/colorText"
                 android:inputType="text"
                 android:maxLines="1"/>
@@ -43,22 +43,6 @@
                 android:hint="E-mail"
                 android:textColor="@color/colorText"
                 android:inputType="textEmailAddress"
-                android:maxLines="1"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputEditTextPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Telefon"
-                android:textColor="@color/colorText"
-                android:inputType="phone"
                 android:maxLines="1"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,8 +90,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:gravity="center"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:id="@+id/loginTextView" android:textColor="@color/colorText"/>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="30dp"
+            android:visibility="gone" />
     </androidx.appcompat.widget.LinearLayoutCompat>
+
 </androidx.core.widget.NestedScrollView>

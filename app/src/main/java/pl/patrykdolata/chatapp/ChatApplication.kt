@@ -13,6 +13,5 @@ class ChatApplication : Application() {
     override fun onTerminate() {
         super.onTerminate()
         SocketService.disconnect()
-        println("::::disconnected")
     }
 }
