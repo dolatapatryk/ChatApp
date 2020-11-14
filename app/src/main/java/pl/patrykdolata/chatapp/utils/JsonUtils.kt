@@ -13,7 +13,7 @@ object JsonUtils {
         return gson.toJson(obj)
     }
 
-    fun <T> toObject(json: String, klazz: Class<T>): T? {
+    fun <T> fromJson(json: String, klazz: Class<T>): T? {
         return try {
             gson.fromJson(json, klazz)
         } catch (e: JsonSyntaxException) {

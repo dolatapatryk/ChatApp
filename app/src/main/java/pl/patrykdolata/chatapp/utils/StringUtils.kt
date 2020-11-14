@@ -2,7 +2,6 @@ package pl.patrykdolata.chatapp.utils
 
 object StringUtils {
 
-
     fun isEmpty(str: String?): Boolean {
         return str == null || str == ""
     }
