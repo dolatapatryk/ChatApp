@@ -2,10 +2,12 @@ package pl.patrykdolata.chatapp.utils
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
+import pl.patrykdolata.chatapp.models.Friend
 
 object JsonUtils {
 
-    private val gson: Gson = Gson()
+    val gson: Gson = Gson()
 
     fun toJson(obj: Any): String {
         if (obj is String)
@@ -19,5 +21,9 @@ object JsonUtils {
         } catch (e: JsonSyntaxException) {
             null
         }
+    }
+
+    inline fun <reified T> fromJsonArray(json: String): T {
+        return gson.fromJson(json, object: TypeToken<T>(){}.type)
     }
 }

@@ -13,6 +13,9 @@ import kotlinx.android.synthetic.main.friends_fragment.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.FriendsAdapter
 import pl.patrykdolata.chatapp.models.Friend
+import pl.patrykdolata.chatapp.services.SocketService
+import pl.patrykdolata.chatapp.utils.JsonUtils
+import pl.patrykdolata.chatapp.utils.SocketConstants
 
 class FriendsFragment : Fragment() {
 
@@ -36,17 +39,29 @@ class FriendsFragment : Fragment() {
         friendsRecyclerView.layoutManager = LinearLayoutManager(activity)
         searchRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val pendingFriendsAdapter = FriendsAdapter(arrayOf(Friend("1", "adam")))
-        val friendsAdapter = FriendsAdapter(arrayOf(Friend("2", "michał")))
-        val searchFriendsAdapter = FriendsAdapter(arrayOf())
+        val pendingFriendsAdapter = FriendsAdapter(listOf(Friend("1", "adam")))
+        val friendsAdapter = FriendsAdapter(listOf(Friend("2", "michał")))
+        val searchFriendsAdapter = FriendsAdapter(listOf())
 
         pendingRecyclerView.adapter = pendingFriendsAdapter
         friendsRecyclerView.adapter = friendsAdapter
         searchRecyclerView.adapter = searchFriendsAdapter
 
+        SocketService.on(SocketConstants.GET_USERS_RESPONSE) {args ->
+            onGetUsersResponse(args)
+        }
+        SocketService.emit(SocketConstants.GET_USERS)
+
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
 
         return view
+    }
+
+    private fun onGetUsersResponse(responseArgs: Array<Any>) {
+        activity?.runOnUiThread {
+            val userList: List<Friend> = JsonUtils.fromJsonArray(responseArgs[0] as String)
+            searchRecyclerView.adapter = FriendsAdapter(userList)
+        }
     }
 
     private fun initFieldsFromView(view: View) {

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.register_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.models.User
 import pl.patrykdolata.chatapp.services.SocketService
-import pl.patrykdolata.chatapp.utils.SocketUtils
+import pl.patrykdolata.chatapp.utils.SocketConstants
 import pl.patrykdolata.chatapp.utils.StringUtils
 
 data class RegisterData(
@@ -45,10 +45,10 @@ class RegisterActivity : AppCompatActivity() {
 
         val registerData = RegisterData(username, email, password, confirmPassword)
         if (isFormValid(registerData)) {
-            SocketService.on(SocketUtils.CHECK_USERNAME_RESPONSE_EVENT) { args ->
+            SocketService.on(SocketConstants.CHECK_USERNAME_RESPONSE_EVENT) { args ->
                 onCheckUsernameResponse(registerData, args)
             }
-            SocketService.emit(SocketUtils.CHECK_USERNAME_EVENT, username)
+            SocketService.emit(SocketConstants.CHECK_USERNAME_EVENT, username)
         } else {
             progressBar.visibility = View.GONE
         }
@@ -56,7 +56,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun onCheckUsernameResponse(registerData: RegisterData, responseArgs: Array<Any>) {
         runOnUiThread {
-            SocketService.off(SocketUtils.CHECK_USERNAME_RESPONSE_EVENT)
+            SocketService.off(SocketConstants.CHECK_USERNAME_RESPONSE_EVENT)
             val exists = responseArgs[0] as Boolean
             if (exists) {
                 Toast.makeText(
@@ -70,7 +70,7 @@ class RegisterActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             val id = auth.currentUser?.uid
                             val user = User(id.orEmpty(), registerData.username, registerData.email)
-                            SocketService.emit(SocketUtils.REGISTER_EVENT, user)
+                            SocketService.emit(SocketConstants.REGISTER_EVENT, user)
                             Toast.makeText(
                                 this, "Rejestracja przebiegła pomyślnie!",
                                 Toast.LENGTH_LONG

@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.friend_item.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.models.Friend
 
-class FriendsAdapter(private val friends: Array<Friend>) :
+class FriendsAdapter(private val friends: List<Friend>) :
     RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder>() {
 
     class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -21,7 +21,7 @@ class FriendsAdapter(private val friends: Array<Friend>) :
     }
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
-        holder.itemView.friendName.text = friends[position].displayName
+        holder.itemView.friendName.text = friends[position].username
     }
 
     override fun getItemCount() = friends.size

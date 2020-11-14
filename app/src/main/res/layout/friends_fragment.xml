@@ -55,7 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:iconifiedByDefault="false"
-                    android:queryHint="Szukaj znajomych"
+                    android:queryHint="Wyszukaj znajomego..."
                     android:searchIcon="@null"
                     android:textColor="@color/black" />
 

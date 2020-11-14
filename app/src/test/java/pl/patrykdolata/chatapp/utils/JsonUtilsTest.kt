@@ -2,6 +2,7 @@ package pl.patrykdolata.chatapp.utils
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.User
 
 class JsonUtilsTest {
@@ -86,5 +87,15 @@ class JsonUtilsTest {
         val result = JsonUtils.fromJson(data, User::class.java)
         assertThat(result is User)
         assertThat(result).isNull()
+    }
+
+    @Test
+    fun fromJsonArray_whenArgIsFriendArrayJson_expectFriendList() {
+        val data = "[{\"id\":\"1\",\"username\":\"michalek\"}," +
+                "{\"id\":\"2\",\"username\":\"patol2\"}]"
+        val result: List<Friend> = JsonUtils.fromJsonArray(data)
+        assertThat(result is ArrayList<Friend>)
+        assertThat(result.size).isEqualTo(2)
+        assertThat(result[1].username).isEqualTo("patol2")
     }
 }
