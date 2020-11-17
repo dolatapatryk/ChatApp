@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.sent_message_item.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.models.Message
 import pl.patrykdolata.chatapp.models.MessageType
-import java.lang.IllegalArgumentException
 
 class MessageAdapter(private val messages: Array<Message>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -25,11 +24,15 @@ class MessageAdapter(private val messages: Array<Message>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
-            MessageType.SENT.type -> SentMessageViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.sent_message_item, parent, false))
-            MessageType.RECEIVED.type -> ReceivedMessageViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.received_message_item, parent, false))
+        return when (viewType) {
+            MessageType.SENT.type -> SentMessageViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.sent_message_item, parent, false)
+            )
+            MessageType.RECEIVED.type -> ReceivedMessageViewHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.received_message_item, parent, false)
+            )
             else -> throw IllegalArgumentException()
         }
     }

@@ -7,8 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.friend_item.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.models.Friend
+import pl.patrykdolata.chatapp.models.FriendType
 
-class FriendsAdapter(private val friends: List<Friend>) :
+class FriendsAdapter(
+    private val friends: List<Friend>,
+    private val friendType: FriendType,
+    private val buttonListener: (Friend) -> Unit = {}
+) :
     RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder>() {
 
     class FriendsViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -22,6 +27,12 @@ class FriendsAdapter(private val friends: List<Friend>) :
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
         holder.itemView.friendName.text = friends[position].username
+        when (friendType) {
+            FriendType.FRIEND -> holder.itemView.inviteButton.visibility = View.GONE
+            FriendType.SEARCHED -> holder.itemView.inviteButton.text = "Zaproś"
+            FriendType.PENDING -> holder.itemView.inviteButton.text = "Akceptuj"
+        }
+        holder.itemView.inviteButton.setOnClickListener { buttonListener(friends[position]) }
     }
 
     override fun getItemCount() = friends.size

@@ -15,18 +15,20 @@ import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.PageAdapter
 import pl.patrykdolata.chatapp.fragments.ConversationsFragment
 import pl.patrykdolata.chatapp.fragments.FriendsFragment
+import pl.patrykdolata.chatapp.services.SocketService
+import pl.patrykdolata.chatapp.utils.SocketConstants
 
 class MainActivity : AppCompatActivity() {
 
-//    private lateinit var auth: FirebaseAuth
-//    private var user: FirebaseUser? = null
+    private lateinit var auth: FirebaseAuth
+    private var user: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-//        auth = FirebaseAuth.getInstance()
-//        user = auth.currentUser
+        auth = FirebaseAuth.getInstance()
+        user = auth.currentUser
 
         mainToolbar.title = "ChatApp"
         setSupportActionBar(mainToolbar)
@@ -52,7 +54,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-//        auth.signOut()
+        SocketService.emit(SocketConstants.LOGOUT_EVENT, user?.uid ?: "")
+        auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         Handler().postDelayed(
             { startActivity(intent) },

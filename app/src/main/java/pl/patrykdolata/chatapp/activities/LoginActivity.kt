@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.services.SocketService
+import pl.patrykdolata.chatapp.utils.SocketConstants
 import pl.patrykdolata.chatapp.utils.StringUtils
 
 class LoginActivity : AppCompatActivity() {
@@ -57,6 +58,8 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Pomyślne logowanie!", Toast.LENGTH_LONG)
                             .show()
+                        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                        SocketService.emit(SocketConstants.LOGIN_EVENT, userId)
                         goToMainActivity()
                     } else {
                         onFailedLogin(task.exception)
