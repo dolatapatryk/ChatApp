@@ -90,7 +90,7 @@ class FriendsFragment : Fragment() {
     private fun onFindUsersResponse(responseArgs: Array<Any>) {
         SocketService.off(SocketConstants.FIND_USERS_RESPONSE_EVENT)
         onFriendsRequestResponse(
-            responseArgs, searchRecyclerView, noSearchResultTextView, FriendType.SEARCHED
+            responseArgs, searchRecyclerView, noSearchResultTextView, false, FriendType.SEARCHED
         ) { friend ->
             sendFriendRequest(friend)
         }
@@ -98,7 +98,7 @@ class FriendsFragment : Fragment() {
 
     private fun onGetFriendsResponse(responseArgs: Array<Any>) {
         onFriendsRequestResponse(
-            responseArgs, friendsRecyclerView, noFriendsTextView, FriendType.FRIEND
+            responseArgs, friendsRecyclerView, friendsHeader, true, FriendType.FRIEND
         )
         val afterFriendAccept: Boolean = responseArgs[1] as Boolean
         if (afterFriendAccept) {
@@ -108,20 +108,27 @@ class FriendsFragment : Fragment() {
 
     private fun onGetFriendsRequestsResponse(responseArgs: Array<Any>) {
         onFriendsRequestResponse(
-            responseArgs, pendingRecyclerView, noRequestsTextView, FriendType.PENDING
+            responseArgs, pendingRecyclerView, pendingHeader, true, FriendType.PENDING
         ) { friend ->
             acceptFriendRequest(friend)
         }
+
     }
 
     private fun onFriendsRequestResponse(
-        responseArgs: Array<Any>, recyclerView: RecyclerView,
-        noTextView: TextView, type: FriendType, buttonListener: (Friend) -> Unit = {}
+        responseArgs: Array<Any>,
+        recyclerView: RecyclerView,
+        textView: TextView,
+        textViewVisibilityNegation: Boolean,
+        type: FriendType,
+        buttonListener: (Friend) -> Unit = {}
     ) {
         activity?.runOnUiThread {
             val friends: List<Friend> = JsonUtils.fromJsonArray(responseArgs[0] as String)
             recyclerView.adapter = FriendsAdapter(friends, type, buttonListener)
-            noTextView.visibility = when (friends.isEmpty()) {
+            val condition =
+                if (textViewVisibilityNegation) friends.isNotEmpty() else friends.isEmpty()
+            textView.visibility = when (condition) {
                 true -> View.VISIBLE
                 false -> View.GONE
             }

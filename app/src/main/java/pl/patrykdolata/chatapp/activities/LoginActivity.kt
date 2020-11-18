@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.services.SocketService
@@ -59,7 +60,13 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Pomyślne logowanie!", Toast.LENGTH_LONG)
                             .show()
                         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                        SocketService.emit(SocketConstants.LOGIN_EVENT, userId)
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener { token ->
+                            if (token.isSuccessful) {
+                                val tokenString = token.result ?: ""
+//                                println("token - $tokenString")
+                                SocketService.emit(SocketConstants.LOGIN_EVENT, userId, tokenString)
+                            }
+                        }
                         goToMainActivity()
                     } else {
                         onFailedLogin(task.exception)
