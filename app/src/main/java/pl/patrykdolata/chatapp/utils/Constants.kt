@@ -1,8 +1,9 @@
 package pl.patrykdolata.chatapp.utils
 
-object SocketConstants {
+object Constants {
     const val REGISTER_EVENT = "register"
     const val LOGIN_EVENT = "login"
+    const val REFRESH_TOKEN_EVENT = "refresh_token"
     const val LOGOUT_EVENT = "logout"
     const val CHECK_USERNAME_EVENT = "check_username"
     const val CHECK_USERNAME_RESPONSE_EVENT = "check_username_response"
@@ -16,4 +17,9 @@ object SocketConstants {
     const val GET_FRIENDS_EVENT = "get_friends";
     const val GET_FRIENDS_RESPONSE_EVENT = "get_friends_response";
     const val ACCEPT_FRIEND_REQUEST_EVENT = "accept_friend_request";
+
+    const val NEW_MESSAGE_TYPE = "new_message"
+    const val FRIEND_REQUEST_TYPE = "friend_request"
+    const val FRIEND_ACCEPTED_TYPE = "friend_accepted"
+    const val KEY_EXCHANGE_REQUEST_TYPE = "key_exchange_request"
 }

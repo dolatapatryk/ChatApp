@@ -9,14 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.PageAdapter
 import pl.patrykdolata.chatapp.fragments.ConversationsFragment
 import pl.patrykdolata.chatapp.fragments.FriendsFragment
 import pl.patrykdolata.chatapp.services.SocketService
-import pl.patrykdolata.chatapp.utils.SocketConstants
+import pl.patrykdolata.chatapp.utils.Constants
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mainToolbar)
 
         setupViewPager()
+        when(intent.extras?.getString("fragment", "conversations")) {
+            "conversations" -> viewPager.currentItem = 0
+            "friends" -> viewPager.currentItem = 1
+        }
     }
 
     override fun onDestroy() {
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        SocketService.emit(SocketConstants.LOGOUT_EVENT, user?.uid ?: "")
+        SocketService.emit(Constants.LOGOUT_EVENT, user?.uid ?: "")
         auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         Handler().postDelayed(

@@ -4,12 +4,18 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
+import pl.patrykdolata.chatapp.ChatApplication.Companion.NOTIFICATION_CHANNEL_ID
 import pl.patrykdolata.chatapp.R
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NotificationService(private val context: Context) {
+@Singleton
+class NotificationService @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun createNotification(title: String?, text: String?, pendingIntent: PendingIntent) {
-        val builder = NotificationCompat.Builder(context, "1")
+        val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(text)
@@ -18,7 +24,7 @@ class NotificationService(private val context: Context) {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
-            notify(1, builder.build())
+            notify(Objects.hash(title, text), builder.build())
         }
     }
 }

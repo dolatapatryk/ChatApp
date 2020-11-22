@@ -13,7 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.login_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.services.SocketService
-import pl.patrykdolata.chatapp.utils.SocketConstants
+import pl.patrykdolata.chatapp.utils.Constants
 import pl.patrykdolata.chatapp.utils.StringUtils
 
 class LoginActivity : AppCompatActivity() {
@@ -63,8 +63,8 @@ class LoginActivity : AppCompatActivity() {
                         FirebaseMessaging.getInstance().token.addOnCompleteListener { token ->
                             if (token.isSuccessful) {
                                 val tokenString = token.result ?: ""
-//                                println("token - $tokenString")
-                                SocketService.emit(SocketConstants.LOGIN_EVENT, userId, tokenString)
+                                println("token - $tokenString")
+                                SocketService.emit(Constants.LOGIN_EVENT, userId, tokenString)
                             }
                         }
                         goToMainActivity()

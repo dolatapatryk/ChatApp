@@ -21,7 +21,7 @@ import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.FriendType
 import pl.patrykdolata.chatapp.services.SocketService
 import pl.patrykdolata.chatapp.utils.JsonUtils
-import pl.patrykdolata.chatapp.utils.SocketConstants
+import pl.patrykdolata.chatapp.utils.Constants
 
 class FriendsFragment : Fragment() {
 
@@ -61,10 +61,10 @@ class FriendsFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val searchValue: String = query ?: ""
-                SocketService.on(SocketConstants.FIND_USERS_RESPONSE_EVENT) { args ->
+                SocketService.on(Constants.FIND_USERS_RESPONSE_EVENT) { args ->
                     onFindUsersResponse(args)
                 }
-                SocketService.emit(SocketConstants.FIND_USERS_EVENT, userId, searchValue)
+                SocketService.emit(Constants.FIND_USERS_EVENT, userId, searchValue)
                 return false
             }
 
@@ -75,20 +75,20 @@ class FriendsFragment : Fragment() {
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
 
-        SocketService.on(SocketConstants.GET_FRIENDS_RESPONSE_EVENT) { args ->
+        SocketService.on(Constants.GET_FRIENDS_RESPONSE_EVENT) { args ->
             onGetFriendsResponse(args)
         }
-        SocketService.on(SocketConstants.GET_FRIEND_REQUESTS_RESPONSE_EVENT) { args ->
+        SocketService.on(Constants.GET_FRIEND_REQUESTS_RESPONSE_EVENT) { args ->
             onGetFriendsRequestsResponse(args)
         }
-        SocketService.emit(SocketConstants.GET_FRIENDS_EVENT, userId)
-        SocketService.emit(SocketConstants.GET_FRIEND_REQUESTS_EVENT, userId)
+        SocketService.emit(Constants.GET_FRIENDS_EVENT, userId)
+        SocketService.emit(Constants.GET_FRIEND_REQUESTS_EVENT, userId)
 
         return view
     }
 
     private fun onFindUsersResponse(responseArgs: Array<Any>) {
-        SocketService.off(SocketConstants.FIND_USERS_RESPONSE_EVENT)
+        SocketService.off(Constants.FIND_USERS_RESPONSE_EVENT)
         onFriendsRequestResponse(
             responseArgs, searchRecyclerView, noSearchResultTextView, false, FriendType.SEARCHED
         ) { friend ->
@@ -102,7 +102,7 @@ class FriendsFragment : Fragment() {
         )
         val afterFriendAccept: Boolean = responseArgs[1] as Boolean
         if (afterFriendAccept) {
-            SocketService.emit(SocketConstants.GET_FRIEND_REQUESTS_EVENT, userId);
+            SocketService.emit(Constants.GET_FRIEND_REQUESTS_EVENT, userId);
         }
     }
 
@@ -136,11 +136,11 @@ class FriendsFragment : Fragment() {
     }
 
     private fun acceptFriendRequest(friend: Friend) {
-        SocketService.emit(SocketConstants.ACCEPT_FRIEND_REQUEST_EVENT, friend.id, userId)
+        SocketService.emit(Constants.ACCEPT_FRIEND_REQUEST_EVENT, friend.id, userId)
     }
 
     private fun sendFriendRequest(friend: Friend) {
-        SocketService.emit(SocketConstants.FRIEND_REQUEST_EVENT, userId, friend.id)
+        SocketService.emit(Constants.FRIEND_REQUEST_EVENT, userId, friend.id)
     }
 
     private fun initFieldsFromView(view: View) {

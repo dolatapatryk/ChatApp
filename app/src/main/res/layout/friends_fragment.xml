@@ -67,6 +67,7 @@
                     android:text="@string/pending"
                     android:textColor="@color/black"
                     android:textDirection="locale"
+                    android:visibility="gone"
                     android:textSize="24sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -86,6 +87,7 @@
                     android:text="@string/friends"
                     android:textColor="@color/black"
                     android:textDirection="locale"
+                    android:visibility="gone"
                     android:textSize="24sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
