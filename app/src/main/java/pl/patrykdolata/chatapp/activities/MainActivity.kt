@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -28,12 +29,17 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         user = auth.currentUser
+        if (user != null) {
+            userTextView.text = user!!.email
+        } else {
+            userTextView.visibility = View.GONE
+        }
 
         mainToolbar.title = "ChatApp"
         setSupportActionBar(mainToolbar)
 
         setupViewPager()
-        when(intent.extras?.getString("fragment", "conversations")) {
+        when (intent.extras?.getString("fragment", "conversations")) {
             "conversations" -> viewPager.currentItem = 0
             "friends" -> viewPager.currentItem = 1
         }

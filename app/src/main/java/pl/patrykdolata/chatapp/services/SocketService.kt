@@ -9,7 +9,7 @@ import java.net.URISyntaxException
 object SocketService {
 //    private const val socketUri = "http://10.0.2.2:5000"
 //    const val socketUri = "https://blooming-taiga-79616.herokuapp.com"
-    private const val socketUri = "http://192.168.1.19:5000"
+    private const val socketUri = "http://192.168.0.103:5000"
 
     private lateinit var socket: Socket;
     private lateinit var socketId: String;

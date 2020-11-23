@@ -28,13 +28,7 @@ class ConversationsFragment : Fragment() {
             .inflate(R.layout.conversations_fragment, container, false)
         initFieldsFromView(view)
 
-        val conversationsAdapter = ConversationsAdapter(
-            arrayOf(
-                Conversation("michał", "jak tam życie"),
-                Conversation("maciek", "co tam byku"),
-                Conversation("mama", "kup mleko")
-            ),
-        ) {
+        val conversationsAdapter = ConversationsAdapter(arrayOf()) {
             goToConversationActivity(it)
         }
         conversationsRecyclerView.layoutManager = LinearLayoutManager(activity)

@@ -1,23 +1,53 @@
 package pl.patrykdolata.chatapp.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.conversation_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.MessageAdapter
-import pl.patrykdolata.chatapp.models.Message
+import pl.patrykdolata.chatapp.db.AppDatabase
+import pl.patrykdolata.chatapp.entitites.ConversationEntity
+import pl.patrykdolata.chatapp.entitites.MessageEntity
 
 class ConversationActivity : AppCompatActivity() {
+
+    private lateinit var db: AppDatabase
+    private var conversation: ConversationEntity? = null
+
+    private val changeObserver = Observer<List<MessageEntity>> { value ->
+        value?.let { messages ->
+            val messageAdapter = MessageAdapter(messages, conversation!!.userId)
+            messagesRecyclerView.adapter = messageAdapter
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.conversation_activity)
 
-        println(intent.extras!!["friendName"])
+        db = AppDatabase(this)
+
+        println(intent.extras!!["userId"])
+        println(intent.extras!!["friendId"])
+
+        val userId = intent.extras!!["userId"] as String
+        val friendId = intent.extras!!["friendId"] as String
+        val friendUsername = intent.extras!!["friendUsername"] as String
+
+        conversation =
+            db.conversationDao().getByUserIdAndFriendId(userId = userId, friendId = friendId)
+
+        if (conversation == null) {
+            println("tworze nowa konwersacje w bazie")
+            val toAdd = ConversationEntity(userId, friendId, friendUsername)
+            val id = db.conversationDao().insert(toAdd)
+            conversation = ConversationEntity(id, toAdd)
+        }
+        conversationToolbar.title = conversation!!.friendUsername
 
         messagesRecyclerView.layoutManager = LinearLayoutManager(this)
-        conversationToolbar.title = "Michał"
 
         setSupportActionBar(conversationToolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -28,13 +58,11 @@ class ConversationActivity : AppCompatActivity() {
             send()
         }
 
-        val messages = arrayOf(
-            Message("2", "Co tam?", 123),
-            Message("1", "Wszystko ok, a tam?", 132),
-            Message("2", "Też dobrze?", 155)
-        )
-        val messageAdapter = MessageAdapter(messages)
+        val messageAdapter = MessageAdapter(listOf(), conversation!!.userId)
         messagesRecyclerView.adapter = messageAdapter
+
+        db.messageDao().getAllConversationMessages(conversation!!.id)
+            .observe(this, changeObserver)
     }
 
     private fun send() {

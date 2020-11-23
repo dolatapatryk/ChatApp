@@ -1,6 +1,8 @@
 package pl.patrykdolata.chatapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.friends_fragment.*
 import kotlinx.android.synthetic.main.friends_fragment.view.*
 import pl.patrykdolata.chatapp.R
+import pl.patrykdolata.chatapp.activities.ConversationActivity
 import pl.patrykdolata.chatapp.adapters.FriendsAdapter
 import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.FriendType
@@ -23,7 +26,7 @@ import pl.patrykdolata.chatapp.services.SocketService
 import pl.patrykdolata.chatapp.utils.JsonUtils
 import pl.patrykdolata.chatapp.utils.Constants
 
-class FriendsFragment : Fragment() {
+class FriendsFragment() : Fragment() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var pendingRecyclerView: RecyclerView
@@ -98,11 +101,9 @@ class FriendsFragment : Fragment() {
 
     private fun onGetFriendsResponse(responseArgs: Array<Any>) {
         onFriendsRequestResponse(
-            responseArgs, friendsRecyclerView, friendsHeader, true, FriendType.FRIEND
-        )
-        val afterFriendAccept: Boolean = responseArgs[1] as Boolean
-        if (afterFriendAccept) {
-            SocketService.emit(Constants.GET_FRIEND_REQUESTS_EVENT, userId);
+            responseArgs, friendsRecyclerView, friendsHeader, true, FriendType.FRIEND,
+        ) {friend ->
+            goToConversationActivity(friend)
         }
     }
 
@@ -112,7 +113,6 @@ class FriendsFragment : Fragment() {
         ) { friend ->
             acceptFriendRequest(friend)
         }
-
     }
 
     private fun onFriendsRequestResponse(
@@ -121,11 +121,11 @@ class FriendsFragment : Fragment() {
         textView: TextView,
         textViewVisibilityNegation: Boolean,
         type: FriendType,
-        buttonListener: (Friend) -> Unit = {}
+        listener: (Friend) -> Unit = {}
     ) {
         activity?.runOnUiThread {
             val friends: List<Friend> = JsonUtils.fromJsonArray(responseArgs[0] as String)
-            recyclerView.adapter = FriendsAdapter(friends, type, buttonListener)
+            recyclerView.adapter = FriendsAdapter(friends, type, listener)
             val condition =
                 if (textViewVisibilityNegation) friends.isNotEmpty() else friends.isEmpty()
             textView.visibility = when (condition) {
@@ -141,6 +141,17 @@ class FriendsFragment : Fragment() {
 
     private fun sendFriendRequest(friend: Friend) {
         SocketService.emit(Constants.FRIEND_REQUEST_EVENT, userId, friend.id)
+    }
+
+    private fun goToConversationActivity(friend: Friend) {
+        val conversationIntent = Intent(activity, ConversationActivity::class.java)
+        conversationIntent.putExtra("userId", userId)
+        conversationIntent.putExtra("friendId", friend.id)
+        conversationIntent.putExtra("friendUsername", friend.username)
+        Handler().postDelayed(
+            { startActivity(conversationIntent) },
+            10
+        )
     }
 
     private fun initFieldsFromView(view: View) {

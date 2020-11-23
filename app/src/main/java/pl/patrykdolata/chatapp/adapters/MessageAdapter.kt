@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sent_message_item.view.*
 import pl.patrykdolata.chatapp.R
-import pl.patrykdolata.chatapp.models.Message
+import pl.patrykdolata.chatapp.entitites.MessageEntity
 import pl.patrykdolata.chatapp.models.MessageType
 
-class MessageAdapter(private val messages: Array<Message>) :
+class MessageAdapter(private val messages: List<MessageEntity>, private val userId: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class SentMessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -17,7 +17,7 @@ class MessageAdapter(private val messages: Array<Message>) :
     class ReceivedMessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].userId == "1")
+        return if (messages[position].senderId == userId)
             MessageType.SENT.type
         else
             MessageType.RECEIVED.type
@@ -39,7 +39,7 @@ class MessageAdapter(private val messages: Array<Message>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.timestampTextView.text = messages[position].timestamp.toString()
-        holder.itemView.messageTextView.text = messages[position].message
+        holder.itemView.messageTextView.text = messages[position].text
     }
 
     override fun getItemCount() = messages.size

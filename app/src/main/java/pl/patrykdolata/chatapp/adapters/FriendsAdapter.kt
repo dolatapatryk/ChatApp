@@ -12,7 +12,7 @@ import pl.patrykdolata.chatapp.models.FriendType
 class FriendsAdapter(
     private val friends: List<Friend>,
     private val friendType: FriendType,
-    private val buttonListener: (Friend) -> Unit = {}
+    private val listener: (Friend) -> Unit = {}
 ) :
     RecyclerView.Adapter<FriendsAdapter.FriendsViewHolder>() {
 
@@ -28,11 +28,14 @@ class FriendsAdapter(
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
         holder.itemView.friendName.text = friends[position].username
         when (friendType) {
-            FriendType.FRIEND -> holder.itemView.inviteButton.visibility = View.GONE
+            FriendType.FRIEND -> {
+                holder.itemView.inviteButton.visibility = View.GONE
+                holder.itemView.setOnClickListener { listener(friends[position]) }
+            }
             FriendType.SEARCHED -> holder.itemView.inviteButton.text = "Zaproś"
             FriendType.PENDING -> holder.itemView.inviteButton.text = "Akceptuj"
         }
-        holder.itemView.inviteButton.setOnClickListener { buttonListener(friends[position]) }
+        holder.itemView.inviteButton.setOnClickListener { listener(friends[position]) }
     }
 
     override fun getItemCount() = friends.size
