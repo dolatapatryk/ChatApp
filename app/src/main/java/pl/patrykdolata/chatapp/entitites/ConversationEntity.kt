@@ -21,23 +21,37 @@ data class ConversationEntity(
     @ColumnInfo(name = "friend_id")
     var friendId: String,
     @ColumnInfo(name = "friend_username")
-    var friendUsername: String
+    var friendUsername: String,
+    @ColumnInfo(name = "last_interaction")
+    var lastInteraction: Long,
+    @ColumnInfo(name = "last_message")
+    var lastMessage: String
 ) {
     companion object {
         const val TABLE_NAME = "conversation"
     }
 
-    constructor(userId: String, friendId: String, friendUsername: String) : this(
+    constructor(
+        userId: String,
+        friendId: String,
+        friendUsername: String,
+        lastInteraction: Long,
+        lastMessage: String
+    ) : this(
         0L,
         userId,
         friendId,
-        friendUsername
+        friendUsername,
+        lastInteraction,
+        lastMessage
     )
 
     constructor(id: Long, conversation: ConversationEntity) : this(
         id,
         conversation.userId,
         conversation.friendId,
-        conversation.friendUsername
+        conversation.friendUsername,
+        conversation.lastInteraction,
+        conversation.lastMessage
     )
 }

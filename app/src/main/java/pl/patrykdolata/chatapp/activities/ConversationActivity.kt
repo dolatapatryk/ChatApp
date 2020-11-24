@@ -2,26 +2,22 @@ package pl.patrykdolata.chatapp.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.conversation_activity.*
 import pl.patrykdolata.chatapp.R
-import pl.patrykdolata.chatapp.adapters.MessageAdapter
+import pl.patrykdolata.chatapp.adapters.MessagePagingAdapter
 import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.entitites.ConversationEntity
 import pl.patrykdolata.chatapp.entitites.MessageEntity
+import pl.patrykdolata.chatapp.viewmodels.MessageViewModel
+import pl.patrykdolata.chatapp.viewmodels.MessageViewModelFactory
 
 class ConversationActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
-    private var conversation: ConversationEntity? = null
-
-    private val changeObserver = Observer<List<MessageEntity>> { value ->
-        value?.let { messages ->
-            val messageAdapter = MessageAdapter(messages, conversation!!.userId)
-            messagesRecyclerView.adapter = messageAdapter
-        }
-    }
+    private lateinit var viewModel: MessageViewModel
+    private lateinit var conversation: ConversationEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +32,33 @@ class ConversationActivity : AppCompatActivity() {
         val friendId = intent.extras!!["friendId"] as String
         val friendUsername = intent.extras!!["friendUsername"] as String
 
-        conversation =
+        val existingConversation =
             db.conversationDao().getByUserIdAndFriendId(userId = userId, friendId = friendId)
 
-        if (conversation == null) {
+        conversation = if (existingConversation == null) {
             println("tworze nowa konwersacje w bazie")
-            val toAdd = ConversationEntity(userId, friendId, friendUsername)
+            val toAdd =
+                ConversationEntity(userId, friendId, friendUsername, System.currentTimeMillis(), "")
             val id = db.conversationDao().insert(toAdd)
-            conversation = ConversationEntity(id, toAdd)
+            ConversationEntity(id, toAdd)
+        } else {
+            existingConversation
         }
-        conversationToolbar.title = conversation!!.friendUsername
+        conversationToolbar.title = conversation.friendUsername
+        val recyclerLayout = LinearLayoutManager(this)
+//        recyclerLayout.reverseLayout = true
+        recyclerLayout.stackFromEnd = true
+        messagesRecyclerView.layoutManager = recyclerLayout
 
-        messagesRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        viewModel =
+            ViewModelProvider(this, MessageViewModelFactory(db.messageDao(), conversation.id)).get(
+                MessageViewModel::class.java
+            )
+        val adapter = MessagePagingAdapter(conversation.userId)
+        messagesRecyclerView.adapter = adapter
+
+        subscribeMessages(adapter)
 
         setSupportActionBar(conversationToolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -57,15 +68,29 @@ class ConversationActivity : AppCompatActivity() {
         sendButton.setOnClickListener {
             send()
         }
+    }
 
-        val messageAdapter = MessageAdapter(listOf(), conversation!!.userId)
-        messagesRecyclerView.adapter = messageAdapter
-
-        db.messageDao().getAllConversationMessages(conversation!!.id)
-            .observe(this, changeObserver)
+    private fun subscribeMessages(adapter: MessagePagingAdapter) {
+        viewModel.getMessages().observe(this, { messages ->
+            println("nowe mesedże")
+            messages.forEach { println(it) }
+            if (messages != null) adapter.submitList(messages)
+        })
     }
 
     private fun send() {
-        println(messageEditText.text)
+        val text = messageEditText.text.toString()
+        println(text)
+        viewModel.sendMessage(newMessage(text))
+        // todo send event with message to server
+
+        messageEditText.text = null
+    }
+
+    private fun newMessage(text: String): MessageEntity {
+        return MessageEntity(
+            conversation.id, conversation.userId, conversation.friendId,
+            text, System.currentTimeMillis()
+        )
     }
 }

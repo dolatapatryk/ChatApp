@@ -30,4 +30,17 @@ data class MessageEntity(
     companion object {
         const val TABLE_NAME = "message"
     }
+
+    constructor(
+        conversationId: Long,
+        senderId: String,
+        receiverId: String,
+        text: String,
+        timestamp: Long
+    ) : this(0L, conversationId, senderId, receiverId, text, timestamp)
+}
+
+enum class MessageType(val type: Int) {
+    SENT(0),
+    RECEIVED(1)
 }

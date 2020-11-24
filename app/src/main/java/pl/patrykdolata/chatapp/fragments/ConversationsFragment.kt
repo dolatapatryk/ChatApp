@@ -7,17 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.conversations_fragment.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.activities.ConversationActivity
 import pl.patrykdolata.chatapp.adapters.ConversationsAdapter
-import pl.patrykdolata.chatapp.models.Conversation
+import pl.patrykdolata.chatapp.db.AppDatabase
+import pl.patrykdolata.chatapp.entitites.ConversationEntity
+import pl.patrykdolata.chatapp.viewmodels.ConversationViewModel
+import pl.patrykdolata.chatapp.viewmodels.ConversationViewModelFactory
 
-class ConversationsFragment : Fragment() {
+class ConversationsFragment(private val db: AppDatabase, private val userId: String) : Fragment() {
 
     private lateinit var conversationsRecyclerView: RecyclerView
+    private lateinit var viewModel: ConversationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,11 +33,17 @@ class ConversationsFragment : Fragment() {
             .inflate(R.layout.conversations_fragment, container, false)
         initFieldsFromView(view)
 
-        val conversationsAdapter = ConversationsAdapter(arrayOf()) {
-            goToConversationActivity(it)
-        }
         conversationsRecyclerView.layoutManager = LinearLayoutManager(activity)
-        conversationsRecyclerView.adapter = conversationsAdapter
+
+        viewModel =
+            ViewModelProvider(this, ConversationViewModelFactory(db.conversationDao(), userId)).get(
+                ConversationViewModel::class.java
+            )
+        val adapter = ConversationsAdapter(userId) { conversation ->
+            goToConversationActivity(conversation)
+        }
+        conversationsRecyclerView.adapter = adapter
+        subscribeConversations(adapter)
 
         return view
     }
@@ -41,12 +52,20 @@ class ConversationsFragment : Fragment() {
         conversationsRecyclerView = view.conversationsRecyclerView
     }
 
-    private fun goToConversationActivity(conversation: Conversation) {
+    private fun goToConversationActivity(conversation: ConversationEntity) {
         val conversationIntent = Intent(activity, ConversationActivity::class.java)
-        conversationIntent.putExtra("friendName", conversation.friendName)
+        conversationIntent.putExtra("userId", userId)
+        conversationIntent.putExtra("friendId", conversation.friendId)
+        conversationIntent.putExtra("friendUsername", conversation.friendUsername)
         Handler().postDelayed(
             { startActivity(conversationIntent) },
             10
         )
+    }
+
+    private fun subscribeConversations(adapter: ConversationsAdapter) {
+        viewModel.getConversations().observe(this, { conversations ->
+            if (conversations != null) adapter.submitList(conversations)
+        })
     }
 }

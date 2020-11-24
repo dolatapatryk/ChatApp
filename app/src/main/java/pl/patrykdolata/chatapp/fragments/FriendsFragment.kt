@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.friends_fragment.*
 import kotlinx.android.synthetic.main.friends_fragment.view.*
 import pl.patrykdolata.chatapp.R
@@ -23,10 +21,10 @@ import pl.patrykdolata.chatapp.adapters.FriendsAdapter
 import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.FriendType
 import pl.patrykdolata.chatapp.services.SocketService
-import pl.patrykdolata.chatapp.utils.JsonUtils
 import pl.patrykdolata.chatapp.utils.Constants
+import pl.patrykdolata.chatapp.utils.JsonUtils
 
-class FriendsFragment() : Fragment() {
+class FriendsFragment(private val userId: String) : Fragment() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var pendingRecyclerView: RecyclerView
@@ -34,9 +32,6 @@ class FriendsFragment() : Fragment() {
     private lateinit var searchRecyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchView: SearchView
-
-    private var user: FirebaseUser? = null
-    private lateinit var userId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,8 +41,7 @@ class FriendsFragment() : Fragment() {
         val view: View = inflater.inflate(R.layout.friends_fragment, container, false)
         initFieldsFromView(view)
 
-        user = FirebaseAuth.getInstance().currentUser
-        userId = user?.uid ?: ""
+        println("fragment friends for user: $userId")
 
         pendingRecyclerView.layoutManager = LinearLayoutManager(activity)
         friendsRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -102,7 +96,7 @@ class FriendsFragment() : Fragment() {
     private fun onGetFriendsResponse(responseArgs: Array<Any>) {
         onFriendsRequestResponse(
             responseArgs, friendsRecyclerView, friendsHeader, true, FriendType.FRIEND,
-        ) {friend ->
+        ) { friend ->
             goToConversationActivity(friend)
         }
     }

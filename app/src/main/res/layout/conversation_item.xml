@@ -3,31 +3,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layoutDirection="locale"
     android:background="@drawable/item_border"
-    android:padding="16dip"
     android:id="@+id/conversationItem"
     >
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.8"
+        android:orientation="vertical"
+        android:padding="16dip"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/friendName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:text="Text Line Item" />
 
-    <TextView
-        android:id="@+id/friendName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center_vertical|end"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        tools:text="Text Line Item" />
+        <TextView
+            android:id="@+id/lastMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical|end"
+            android:textColor="@drawable/grey"
+            android:textSize="16sp"
+            tools:text="Text Line Item" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.2"
+        android:paddingBottom="16dip"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:gravity="bottom"
+            android:textColor="@drawable/grey"
+            android:textSize="12sp"
+            tools:text="Date" >
+        </TextView>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/lastMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center_vertical|end"
-        android:textColor="@drawable/grey"
-        android:textSize="16sp"
-        tools:text="Text Line Item" />
 
 </LinearLayout>

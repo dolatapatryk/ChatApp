@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "632b11eedc9ec02c565099bcc3545c5d",
+    "identityHash": "778b6a0d1d47ae57246ebd46a0b7520a",
     "entities": [
       {
         "tableName": "conversation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT NOT NULL, `friend_id` TEXT NOT NULL, `friend_username` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT NOT NULL, `friend_id` TEXT NOT NULL, `friend_username` TEXT NOT NULL, `last_interaction` INTEGER NOT NULL, `last_message` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -29,6 +29,18 @@
           {
             "fieldPath": "friendUsername",
             "columnName": "friend_username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastInteraction",
+            "columnName": "last_interaction",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastMessage",
+            "columnName": "last_message",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -135,7 +147,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '632b11eedc9ec02c565099bcc3545c5d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '778b6a0d1d47ae57246ebd46a0b7520a')"
     ]
   }
 }

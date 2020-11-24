@@ -1,7 +1,10 @@
 package pl.patrykdolata.chatapp.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import pl.patrykdolata.chatapp.entitites.ConversationEntity
 
 @Dao
@@ -15,6 +18,9 @@ interface ConversationDao {
 
     @Query("select * from conversation where user_id = :userId")
     fun getAllUserConversations(userId: String): LiveData<List<ConversationEntity>>
+
+    @Query("select * from conversation where user_id = :userId order by last_interaction desc")
+    fun getUserConversations(userId: String): LiveData<List<ConversationEntity>>
 
     @Query("select * from conversation where user_id = :userId and friend_id = :friendId limit 1")
     fun getByUserIdAndFriendId(userId: String, friendId: String): ConversationEntity?

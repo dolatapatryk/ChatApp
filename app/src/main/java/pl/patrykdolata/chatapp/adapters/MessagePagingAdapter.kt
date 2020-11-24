@@ -3,21 +3,24 @@ package pl.patrykdolata.chatapp.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sent_message_item.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.entitites.MessageEntity
-import pl.patrykdolata.chatapp.models.MessageType
+import pl.patrykdolata.chatapp.entitites.MessageType
+import pl.patrykdolata.chatapp.utils.StringUtils
 
-class MessageAdapter(private val messages: List<MessageEntity>, private val userId: String) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessagePagingAdapter(val userId: String) :
+    PagedListAdapter<MessageEntity, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
     class SentMessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     class ReceivedMessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].senderId == userId)
+        return if (getItem(position)?.senderId == userId)
             MessageType.SENT.type
         else
             MessageType.RECEIVED.type
@@ -38,9 +41,23 @@ class MessageAdapter(private val messages: List<MessageEntity>, private val user
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.timestampTextView.text = messages[position].timestamp.toString()
-        holder.itemView.messageTextView.text = messages[position].text
+        val message = getItem(position)
+        if (message == null) {
+            holder.itemView.timestampTextView.text = null
+            holder.itemView.messageTextView.text = null
+        } else {
+            holder.itemView.timestampTextView.text = StringUtils.formatDate(message.timestamp)
+            holder.itemView.messageTextView.text = message.text
+        }
+    }
+}
+
+class MessageDiffCallback : DiffUtil.ItemCallback<MessageEntity>() {
+    override fun areItemsTheSame(oldItem: MessageEntity, newItem: MessageEntity): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun getItemCount() = messages.size
+    override fun areContentsTheSame(oldItem: MessageEntity, newItem: MessageEntity): Boolean {
+        return oldItem == newItem
+    }
 }
