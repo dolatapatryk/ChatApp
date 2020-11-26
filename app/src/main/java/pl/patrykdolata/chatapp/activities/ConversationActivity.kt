@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.conversation_activity.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.MessagePagingAdapter
 import pl.patrykdolata.chatapp.db.AppDatabase
@@ -46,13 +49,13 @@ class ConversationActivity : AppCompatActivity() {
         }
         conversationToolbar.title = conversation.friendUsername
         val recyclerLayout = LinearLayoutManager(this)
-//        recyclerLayout.reverseLayout = true
-        recyclerLayout.stackFromEnd = true
+        recyclerLayout.stackFromEnd = false
+        recyclerLayout.reverseLayout = true
         messagesRecyclerView.layoutManager = recyclerLayout
 
 
         viewModel =
-            ViewModelProvider(this, MessageViewModelFactory(db.messageDao(), conversation.id)).get(
+            ViewModelProvider(this, MessageViewModelFactory(db, conversation.id)).get(
                 MessageViewModel::class.java
             )
         val adapter = MessagePagingAdapter(conversation.userId)
@@ -71,6 +74,13 @@ class ConversationActivity : AppCompatActivity() {
     }
 
     private fun subscribeMessages(adapter: MessagePagingAdapter) {
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    messagesRecyclerView.layoutManager?.scrollToPosition(0)
+                }
+            }
+        })
         viewModel.getMessages().observe(this, { messages ->
             println("nowe mesedże")
             messages.forEach { println(it) }

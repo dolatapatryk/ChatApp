@@ -8,30 +8,35 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.launch
-import pl.patrykdolata.chatapp.dao.MessageDao
+import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.entitites.MessageEntity
 
-class MessageViewModel(private val messageDao: MessageDao, private val conversationId: Long) : ViewModel() {
+class MessageViewModel(private val db: AppDatabase, private val conversationId: Long) :
+    ViewModel() {
 
     private var messages: LiveData<PagedList<MessageEntity>>
 
     init {
         val dataSource: DataSource.Factory<Int, MessageEntity> =
-            messageDao.getConversationMessages(conversationId)
-        messages = LivePagedListBuilder(dataSource, 25).build()
+            db.messageDao().getConversationMessages(conversationId)
+        messages = LivePagedListBuilder(dataSource, 100).build()
     }
 
     fun getMessages() = messages
 
     fun sendMessage(message: MessageEntity) = viewModelScope.launch {
-        messageDao.insert(message)
+        db.messageDao().insert(message)
+        db.conversationDao().updateLastInteraction(
+            conversationId, System.currentTimeMillis(),
+            message.text
+        )
     }
 }
 
-class MessageViewModelFactory(private val messageDao: MessageDao, private val conversationId: Long) :
+class MessageViewModelFactory(private val db: AppDatabase, private val conversationId: Long) :
     ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MessageViewModel(messageDao, conversationId) as T
+        return MessageViewModel(db, conversationId) as T
     }
 }

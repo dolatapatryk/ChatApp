@@ -64,7 +64,9 @@ class ConversationsFragment(private val db: AppDatabase, private val userId: Str
     }
 
     private fun subscribeConversations(adapter: ConversationsAdapter) {
-        viewModel.getConversations().observe(this, { conversations ->
+        viewModel.getConversations().observe(viewLifecycleOwner, { conversations ->
+            println("nowe konwy")
+            conversations.forEach { println(it) }
             if (conversations != null) adapter.submitList(conversations)
         })
     }

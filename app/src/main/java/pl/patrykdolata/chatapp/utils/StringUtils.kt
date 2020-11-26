@@ -16,11 +16,12 @@ object StringUtils {
     fun formatDate(timestamp: Long): String {
         val date = Date(timestamp)
         var pattern: String
-        pattern = if (isSameDay(date, Date())) {
-            "HH:mm"
-        } else {
-            "dd.MM"
-        }
+//        pattern = if (isSameDay(date, Date())) {
+//            "HH:mm"
+//        } else {
+//            "dd.MM"
+//        }
+        pattern = "yyyy/MM/dd HH:mm"
         val formatter = SimpleDateFormat(pattern, Locale.getDefault())
         return formatter.format(Date(timestamp))
     }

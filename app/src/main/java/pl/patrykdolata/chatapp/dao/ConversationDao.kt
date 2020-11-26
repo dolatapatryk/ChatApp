@@ -16,12 +16,12 @@ interface ConversationDao {
     @Query("delete from conversation where id = :id")
     suspend fun deleteById(id: Long)
 
-    @Query("select * from conversation where user_id = :userId")
-    fun getAllUserConversations(userId: String): LiveData<List<ConversationEntity>>
-
     @Query("select * from conversation where user_id = :userId order by last_interaction desc")
     fun getUserConversations(userId: String): LiveData<List<ConversationEntity>>
 
     @Query("select * from conversation where user_id = :userId and friend_id = :friendId limit 1")
     fun getByUserIdAndFriendId(userId: String, friendId: String): ConversationEntity?
+
+    @Query("update conversation set last_interaction = :lastInteraction, last_message = :lastMessage where id = :conversationId")
+    suspend fun updateLastInteraction(conversationId: Long, lastInteraction: Long, lastMessage: String)
 }
