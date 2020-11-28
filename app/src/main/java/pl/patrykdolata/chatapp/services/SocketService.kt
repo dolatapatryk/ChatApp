@@ -1,5 +1,6 @@
 package pl.patrykdolata.chatapp.services
 
+import android.util.Log
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -9,7 +10,7 @@ import java.net.URISyntaxException
 object SocketService {
 //    private const val socketUri = "http://10.0.2.2:5000"
 //    const val socketUri = "https://blooming-taiga-79616.herokuapp.com"
-    private const val socketUri = "http://192.168.0.103:5000"
+    private const val socketUri = "http://192.168.1.19:5000"
 
     private lateinit var socket: Socket;
     private lateinit var socketId: String;
@@ -18,7 +19,7 @@ object SocketService {
         try {
             socket = IO.socket(socketUri)
         } catch (e: URISyntaxException) {
-            println(e.localizedMessage)
+            Log.w("SocketService", e.localizedMessage!!)
         }
     }
 
@@ -44,12 +45,12 @@ object SocketService {
         socket.on(event, listener)
     }
 
-    fun off(event: String) {
-        socket.off(event)
+    fun once(event: String, listener: Emitter.Listener) {
+        socket.once(event, listener)
     }
 
-    fun getSocketId(): String {
-        return socketId;
+    fun off(event: String) {
+        socket.off(event)
     }
 
     fun isConnected(): Boolean {

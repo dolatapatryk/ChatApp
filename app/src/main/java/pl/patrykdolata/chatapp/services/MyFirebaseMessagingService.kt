@@ -1,17 +1,15 @@
 package pl.patrykdolata.chatapp.services
 
-import android.app.PendingIntent
-import android.content.Intent
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import pl.patrykdolata.chatapp.ChatApplication
-import pl.patrykdolata.chatapp.activities.MainActivity
+import pl.patrykdolata.chatapp.commands.*
+import pl.patrykdolata.chatapp.db.AppDatabase
+import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.utils.Constants
+import pl.patrykdolata.chatapp.utils.JsonUtils
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -19,6 +17,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var notificationService: NotificationService
+    private lateinit var db: AppDatabase
+    private var messageReceivers: Map<String, FcmCommand> = mapOf()
+
+    init {
+//        messageReceivers = mapOf(
+//            Constants.NEW_MESSAGE_TYPE to NewMessageCommand(notificationService, db),
+//            Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(notificationService),
+//            Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService),
+//            Constants.KEY_EXCHANGE_REQUEST_TYPE to KeyExchangeRequestCommand(notificationService)
+//        )
+    }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -35,77 +44,33 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         println("dostałem mesydż, że trzeba robić rzeczy")
         println("isInBackground? = " + ChatApplication.isInBackground)
+        initializeDb()
+        initializeCommands()
         if (message.data.isNotEmpty()) {
-            val data = message.data
-            when (data["type"]) {
-                Constants.NEW_MESSAGE_TYPE -> handleNewMessage(data)
-                Constants.FRIEND_REQUEST_TYPE -> handleNewFriendRequest(data)
-                Constants.FRIEND_ACCEPTED_TYPE -> handleFriendAccepted(data)
-                Constants.KEY_EXCHANGE_REQUEST_TYPE -> handleKeyExchangeRequest(data)
-            }
-        }
-    }
-
-    private fun handleNewMessage(data: Map<String, String>) {
-
-    }
-
-    private fun handleNewFriendRequest(data: Map<String, String>) {
-        val text = "Nowe zaproszenie od użytkownika: " + data["fromUsername"]
-        handleFriendTypeCloudMessage(
-            data,
-            text,
-            "Nowe zaproszenie!",
-            Constants.GET_FRIEND_REQUESTS_EVENT
-        )
-    }
-
-    private fun handleFriendAccepted(data: Map<String, String>) {
-        val text = data["fromUsername"] + " zaakceptował twoje zaproszenie!"
-        handleFriendTypeCloudMessage(data, text, "Nowy znajomy!", Constants.GET_FRIENDS_EVENT)
-    }
-
-    private fun handleFriendTypeCloudMessage(
-        data: Map<String, String>, text: String,
-        title: String, event: String
-    ) {
-        if (checkIfMessageIsForCurrentUser(data)) {
-            if (ChatApplication.isInBackground) {
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("fragment", "friends")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                val pendingIntent = PendingIntent.getActivity(
-                    applicationContext,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
-                )
-                notificationService.createNotification(title, text, pendingIntent)
+            val data = JsonUtils.mapToModel(message.data, FcmData::class.java)
+            if (data != null) {
+                val command: FcmCommand? = messageReceivers[data.type]
+                command?.execute(this, data)
             } else {
-                val handler = Handler(Looper.getMainLooper())
-                handler.post {
-                    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-                }
-                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                SocketService.emit(event, userId)
+                return
             }
-        } else {
-            saveToDb(data)
         }
     }
 
-    private fun handleKeyExchangeRequest(data: Map<String, String>) {
-
+    private fun initializeCommands() {
+        if (messageReceivers.isEmpty()) {
+            messageReceivers = mapOf(
+                Constants.NEW_MESSAGE_TYPE to NewMessageCommand(notificationService, db),
+                Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(notificationService),
+                Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService),
+                Constants.KEY_EXCHANGE_REQUEST_TYPE to KeyExchangeRequestCommand(notificationService)
+            )
+        }
     }
 
-    private fun checkIfMessageIsForCurrentUser(data: Map<String, String>): Boolean {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        return currentUser != null && currentUser.uid == data["toUserId"]
-    }
-
-    // TODO
-    private fun saveToDb(data: Map<String, String>) {
-
+    private fun initializeDb() {
+        if (!::db.isInitialized) {
+            db = AppDatabase(this)
+        }
     }
 }

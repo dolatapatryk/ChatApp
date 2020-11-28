@@ -45,7 +45,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val registerData = RegisterData(username, email, password, confirmPassword)
         if (isFormValid(registerData)) {
-            SocketService.on(Constants.CHECK_USERNAME_RESPONSE_EVENT) { args ->
+            SocketService.once(Constants.CHECK_USERNAME_RESPONSE_EVENT) { args ->
                 onCheckUsernameResponse(registerData, args)
             }
             SocketService.emit(Constants.CHECK_USERNAME_EVENT, username)
@@ -56,7 +56,6 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun onCheckUsernameResponse(registerData: RegisterData, responseArgs: Array<Any>) {
         runOnUiThread {
-            SocketService.off(Constants.CHECK_USERNAME_RESPONSE_EVENT)
             val exists = responseArgs[0] as Boolean
             if (exists) {
                 Toast.makeText(

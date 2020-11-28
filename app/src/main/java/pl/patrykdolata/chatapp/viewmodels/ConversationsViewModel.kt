@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pl.patrykdolata.chatapp.dao.ConversationDao
-import pl.patrykdolata.chatapp.entitites.ConversationEntity
+import pl.patrykdolata.chatapp.entitites.Conversation
 
-class ConversationViewModel(conversationDao: ConversationDao, userId: String) : ViewModel() {
+class ConversationsViewModel(conversationDao: ConversationDao, userId: String) : ViewModel() {
 
-    private var conversations: LiveData<List<ConversationEntity>> =
+    private var conversations: LiveData<List<Conversation>> =
         conversationDao.getUserConversations(userId = userId)
 
     fun getConversations() = conversations
@@ -20,6 +20,6 @@ class ConversationViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ConversationViewModel(conversationDao, userId) as T
+        return ConversationsViewModel(conversationDao, userId) as T
     }
 }

@@ -15,14 +15,14 @@ import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.activities.ConversationActivity
 import pl.patrykdolata.chatapp.adapters.ConversationsAdapter
 import pl.patrykdolata.chatapp.db.AppDatabase
-import pl.patrykdolata.chatapp.entitites.ConversationEntity
-import pl.patrykdolata.chatapp.viewmodels.ConversationViewModel
+import pl.patrykdolata.chatapp.entitites.Conversation
 import pl.patrykdolata.chatapp.viewmodels.ConversationViewModelFactory
+import pl.patrykdolata.chatapp.viewmodels.ConversationsViewModel
 
 class ConversationsFragment(private val db: AppDatabase, private val userId: String) : Fragment() {
 
     private lateinit var conversationsRecyclerView: RecyclerView
-    private lateinit var viewModel: ConversationViewModel
+    private lateinit var viewModel: ConversationsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,12 +32,11 @@ class ConversationsFragment(private val db: AppDatabase, private val userId: Str
         val view: View = inflater
             .inflate(R.layout.conversations_fragment, container, false)
         initFieldsFromView(view)
-
         conversationsRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         viewModel =
             ViewModelProvider(this, ConversationViewModelFactory(db.conversationDao(), userId)).get(
-                ConversationViewModel::class.java
+                ConversationsViewModel::class.java
             )
         val adapter = ConversationsAdapter(userId) { conversation ->
             goToConversationActivity(conversation)
@@ -52,7 +51,7 @@ class ConversationsFragment(private val db: AppDatabase, private val userId: Str
         conversationsRecyclerView = view.conversationsRecyclerView
     }
 
-    private fun goToConversationActivity(conversation: ConversationEntity) {
+    private fun goToConversationActivity(conversation: Conversation) {
         val conversationIntent = Intent(activity, ConversationActivity::class.java)
         conversationIntent.putExtra("userId", userId)
         conversationIntent.putExtra("friendId", conversation.friendId)

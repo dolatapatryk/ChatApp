@@ -1,19 +1,19 @@
 package pl.patrykdolata.chatapp.entitites
 
 import androidx.room.*
-import pl.patrykdolata.chatapp.entitites.MessageEntity.Companion.TABLE_NAME
+import pl.patrykdolata.chatapp.entitites.Message.Companion.TABLE_NAME
 
 @Entity(
     tableName = TABLE_NAME,
     foreignKeys = [ForeignKey(
-        entity = ConversationEntity::class,
+        entity = Conversation::class,
         parentColumns = ["id"],
         childColumns = ["conversation_id"],
         onDelete = ForeignKey.CASCADE
     )],
     indices = [Index("conversation_id", unique = false)]
 )
-data class MessageEntity(
+data class Message(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     @ColumnInfo(name = "conversation_id")
@@ -38,9 +38,4 @@ data class MessageEntity(
         text: String,
         timestamp: Long
     ) : this(0L, conversationId, senderId, receiverId, text, timestamp)
-}
-
-enum class MessageType(val type: Int) {
-    SENT(0),
-    RECEIVED(1)
 }

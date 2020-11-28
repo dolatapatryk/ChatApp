@@ -9,6 +9,11 @@ object JsonUtils {
 
     val gson: Gson = Gson()
 
+    fun <T> mapToModel(data: Map<String, String>, klazz: Class<T>): T? {
+        val json = toJson(data)
+        return fromJson(json, klazz)
+    }
+
     fun toJson(obj: Any): String {
         if (obj is String)
             return obj

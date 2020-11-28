@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import pl.patrykdolata.chatapp.entitites.ConversationEntity.Companion.TABLE_NAME
+import pl.patrykdolata.chatapp.entitites.Conversation.Companion.TABLE_NAME
 
 @Entity(
     tableName = TABLE_NAME,
@@ -13,7 +13,7 @@ import pl.patrykdolata.chatapp.entitites.ConversationEntity.Companion.TABLE_NAME
         Index(value = ["user_id", "friend_id"], unique = true)
     ]
 )
-data class ConversationEntity(
+data class Conversation(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     @ColumnInfo(name = "user_id")
@@ -46,7 +46,7 @@ data class ConversationEntity(
         lastMessage
     )
 
-    constructor(id: Long, conversation: ConversationEntity) : this(
+    constructor(id: Long, conversation: Conversation) : this(
         id,
         conversation.userId,
         conversation.friendId,

@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.conversation_item.view.*
 import kotlinx.android.synthetic.main.friend_item.view.friendName
 import pl.patrykdolata.chatapp.R
-import pl.patrykdolata.chatapp.entitites.ConversationEntity
+import pl.patrykdolata.chatapp.entitites.Conversation
 import pl.patrykdolata.chatapp.utils.StringUtils
 
-class ConversationsAdapter(val userId: String, private val listener: (ConversationEntity) -> Unit) :
-    ListAdapter<ConversationEntity, ConversationsAdapter.ConversationsViewHolder>(
+class ConversationsAdapter(val userId: String, private val listener: (Conversation) -> Unit) :
+    ListAdapter<Conversation, ConversationsAdapter.ConversationsViewHolder>(
         ConversationDiffCallback()
     ) {
 
@@ -41,17 +41,17 @@ class ConversationsAdapter(val userId: String, private val listener: (Conversati
     }
 }
 
-class ConversationDiffCallback : DiffUtil.ItemCallback<ConversationEntity>() {
+class ConversationDiffCallback : DiffUtil.ItemCallback<Conversation>() {
     override fun areItemsTheSame(
-        oldItem: ConversationEntity,
-        newItem: ConversationEntity
+        oldItem: Conversation,
+        newItem: Conversation
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: ConversationEntity,
-        newItem: ConversationEntity
+        oldItem: Conversation,
+        newItem: Conversation
     ): Boolean {
         return oldItem == newItem
     }

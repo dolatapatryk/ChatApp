@@ -8,12 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sent_message_item.view.*
 import pl.patrykdolata.chatapp.R
-import pl.patrykdolata.chatapp.entitites.MessageEntity
-import pl.patrykdolata.chatapp.entitites.MessageType
+import pl.patrykdolata.chatapp.entitites.Message
 import pl.patrykdolata.chatapp.utils.StringUtils
 
 class MessagePagingAdapter(val userId: String) :
-    PagedListAdapter<MessageEntity, RecyclerView.ViewHolder>(MessageDiffCallback()) {
+    PagedListAdapter<Message, RecyclerView.ViewHolder>(MessageDiffCallback()) {
 
     class SentMessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
@@ -52,12 +51,17 @@ class MessagePagingAdapter(val userId: String) :
     }
 }
 
-class MessageDiffCallback : DiffUtil.ItemCallback<MessageEntity>() {
-    override fun areItemsTheSame(oldItem: MessageEntity, newItem: MessageEntity): Boolean {
+class MessageDiffCallback : DiffUtil.ItemCallback<Message>() {
+    override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: MessageEntity, newItem: MessageEntity): Boolean {
+    override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
         return oldItem == newItem
     }
+}
+
+enum class MessageType(val type: Int) {
+    SENT(0),
+    RECEIVED(1)
 }

@@ -2,6 +2,7 @@ package pl.patrykdolata.chatapp.utils
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.User
 
@@ -97,5 +98,25 @@ class JsonUtilsTest {
         assertThat(result is ArrayList<Friend>)
         assertThat(result.size).isEqualTo(2)
         assertThat(result[1].username).isEqualTo("patol2")
+    }
+
+    @Test
+    fun mapToModel_whenArgIsDataMap_expectFcmDataModel() {
+        val data = mapOf(
+            "type" to "message",
+            "fromUserId" to "123",
+            "fromUsername" to "user",
+            "toUserId" to "456",
+            "text" to "message text",
+            "timestamp" to "12308219213"
+        )
+        val cloudMessage = JsonUtils.mapToModel(data, FcmData::class.java)
+        assertThat(cloudMessage).isNotNull()
+        assertThat(cloudMessage!!.type).isEqualTo("message")
+        assertThat(cloudMessage.fromUserId).isEqualTo("123")
+        assertThat(cloudMessage.fromUsername).isEqualTo("user")
+        assertThat(cloudMessage.toUserId).isEqualTo("456")
+        assertThat(cloudMessage.text).isEqualTo("message text")
+        assertThat(cloudMessage.timestamp).isEqualTo(12308219213L)
     }
 }

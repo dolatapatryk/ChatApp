@@ -6,11 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import pl.patrykdolata.chatapp.dao.ConversationDao
 import pl.patrykdolata.chatapp.dao.MessageDao
-import pl.patrykdolata.chatapp.entitites.ConversationEntity
-import pl.patrykdolata.chatapp.entitites.MessageEntity
+import pl.patrykdolata.chatapp.entitites.Conversation
+import pl.patrykdolata.chatapp.entitites.Message
 
 @Database(
-    entities = [ConversationEntity::class, MessageEntity::class],
+    entities = [Conversation::class, Message::class],
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
