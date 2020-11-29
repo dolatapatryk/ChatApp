@@ -5,7 +5,7 @@ import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.services.NotificationService
 
 class KeyExchangeRequestCommand(private val notificationService: NotificationService) :
-    FcmCommand(notificationService) {
+    FcmCommand() {
 
     override fun executeCommandBackground(context: Context, data: FcmData) {
         TODO("Not yet implemented")

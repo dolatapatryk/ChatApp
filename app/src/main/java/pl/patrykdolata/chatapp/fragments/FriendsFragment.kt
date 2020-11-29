@@ -13,19 +13,25 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.friends_fragment.*
 import kotlinx.android.synthetic.main.friends_fragment.view.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.activities.ConversationActivity
 import pl.patrykdolata.chatapp.adapters.FriendsAdapter
+import pl.patrykdolata.chatapp.crypto.KeyExchange
 import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.models.FriendType
 import pl.patrykdolata.chatapp.services.SocketService
 import pl.patrykdolata.chatapp.utils.Constants
 import pl.patrykdolata.chatapp.utils.JsonUtils
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class FriendsFragment(private val userId: String) : Fragment() {
 
+    @Inject
+    lateinit var keyExchange: KeyExchange
     private lateinit var progressBar: ProgressBar
     private lateinit var pendingRecyclerView: RecyclerView
     private lateinit var friendsRecyclerView: RecyclerView
@@ -112,7 +118,7 @@ class FriendsFragment(private val userId: String) : Fragment() {
     private fun onFriendsRequestResponse(
         responseArgs: Array<Any>,
         recyclerView: RecyclerView,
-        textView: TextView,
+        textView: TextView?,
         textViewVisibilityNegation: Boolean,
         type: FriendType,
         listener: (Friend) -> Unit = {}
@@ -122,7 +128,7 @@ class FriendsFragment(private val userId: String) : Fragment() {
             recyclerView.adapter = FriendsAdapter(friends, type, listener)
             val condition =
                 if (textViewVisibilityNegation) friends.isNotEmpty() else friends.isEmpty()
-            textView.visibility = when (condition) {
+            textView?.visibility = when (condition) {
                 true -> View.VISIBLE
                 false -> View.GONE
             }
@@ -130,11 +136,23 @@ class FriendsFragment(private val userId: String) : Fragment() {
     }
 
     private fun acceptFriendRequest(friend: Friend) {
-        SocketService.emit(Constants.ACCEPT_FRIEND_REQUEST_EVENT, friend.id, userId)
+        val keyPair = keyExchange.getKeyPair(userId, friend.id)
+        SocketService.emit(
+            Constants.ACCEPT_FRIEND_REQUEST_EVENT,
+            friend.id,
+            userId,
+            String(keyPair.public.encoded)
+        )
     }
 
     private fun sendFriendRequest(friend: Friend) {
-        SocketService.emit(Constants.FRIEND_REQUEST_EVENT, userId, friend.id)
+        val keyPair = keyExchange.generateKeyPair(userId, friend.id)
+        SocketService.emit(
+            Constants.FRIEND_REQUEST_EVENT,
+            userId,
+            friend.id,
+            String(keyPair.public.encoded)
+        )
     }
 
     private fun goToConversationActivity(friend: Friend) {

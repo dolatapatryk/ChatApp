@@ -15,6 +15,11 @@ import pl.patrykdolata.chatapp.services.SocketService
 @HiltAndroidApp
 class ChatApplication : Application(), LifecycleObserver {
 
+    companion object {
+        const val NOTIFICATION_CHANNEL_ID = "10928675012"
+        var isInBackground = true
+    }
+
     override fun onCreate() {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
@@ -49,10 +54,5 @@ class ChatApplication : Application(), LifecycleObserver {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-
-    companion object {
-        const val NOTIFICATION_CHANNEL_ID = "10928675012"
-        var isInBackground = true
     }
 }

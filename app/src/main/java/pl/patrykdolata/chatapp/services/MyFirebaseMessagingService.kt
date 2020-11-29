@@ -6,6 +6,7 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import pl.patrykdolata.chatapp.ChatApplication
 import pl.patrykdolata.chatapp.commands.*
+import pl.patrykdolata.chatapp.crypto.KeyExchange
 import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.utils.Constants
@@ -17,17 +18,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var notificationService: NotificationService
+
+    @Inject
+    lateinit var keyExchange: KeyExchange
     private lateinit var db: AppDatabase
     private var messageReceivers: Map<String, FcmCommand> = mapOf()
-
-    init {
-//        messageReceivers = mapOf(
-//            Constants.NEW_MESSAGE_TYPE to NewMessageCommand(notificationService, db),
-//            Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(notificationService),
-//            Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService),
-//            Constants.KEY_EXCHANGE_REQUEST_TYPE to KeyExchangeRequestCommand(notificationService)
-//        )
-    }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -61,8 +56,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (messageReceivers.isEmpty()) {
             messageReceivers = mapOf(
                 Constants.NEW_MESSAGE_TYPE to NewMessageCommand(notificationService, db),
-                Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(notificationService),
-                Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService),
+                Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(
+                    notificationService,
+                    keyExchange
+                ),
+                Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService, keyExchange),
                 Constants.KEY_EXCHANGE_REQUEST_TYPE to KeyExchangeRequestCommand(notificationService)
             )
         }

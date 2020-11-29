@@ -14,6 +14,7 @@ import pl.patrykdolata.chatapp.services.SocketService
 abstract class FriendCommand(private val notificationService: NotificationService) : FcmCommand() {
 
     override fun executeCommandBackground(context: Context, data: FcmData) {
+        doKeyExchangeOperations(data)
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("fragment", "friends")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or
@@ -32,6 +33,8 @@ abstract class FriendCommand(private val notificationService: NotificationServic
     }
 
     override fun executeCommandForeground(context: Context, data: FcmData) {
+        println(data)
+        doKeyExchangeOperations(data)
         val handler = Handler(Looper.getMainLooper())
         handler.post {
             Toast.makeText(context, getNotificationText(data.fromUsername), Toast.LENGTH_LONG)
@@ -39,6 +42,8 @@ abstract class FriendCommand(private val notificationService: NotificationServic
         }
         SocketService.emit(getSocketEvent(), data.toUserId)
     }
+
+    protected abstract fun doKeyExchangeOperations(data: FcmData)
 
     protected abstract fun getNotificationTitle(): String
 

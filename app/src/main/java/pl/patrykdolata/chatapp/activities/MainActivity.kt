@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.main_activity.*
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.PageAdapter
@@ -19,6 +20,7 @@ import pl.patrykdolata.chatapp.fragments.FriendsFragment
 import pl.patrykdolata.chatapp.services.SocketService
 import pl.patrykdolata.chatapp.utils.Constants
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
