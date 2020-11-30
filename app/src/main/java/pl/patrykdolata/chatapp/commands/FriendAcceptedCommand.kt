@@ -4,6 +4,7 @@ import pl.patrykdolata.chatapp.crypto.KeyExchange
 import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.services.NotificationService
 import pl.patrykdolata.chatapp.utils.Constants
+import pl.patrykdolata.chatapp.utils.JsonUtils
 
 class FriendAcceptedCommand(
     notificationService: NotificationService,
@@ -13,7 +14,8 @@ class FriendAcceptedCommand(
 
     override fun doKeyExchangeOperations(data: FcmData) {
         val keyPair = keyExchange.getKeyPair(data.toUserId, data.fromUserId)
-        val pubKey = keyExchange.getSenderPublicKey(data.text!!.toByteArray())
+        val key: ByteArray? = JsonUtils.fromJson(data.text!!, ByteArray::class.java)
+        val pubKey = keyExchange.getSenderPublicKey(key!!)
         keyExchange.doAgreement(keyPair, pubKey, data.toUserId, data.fromUserId)
     }
 

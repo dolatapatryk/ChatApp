@@ -141,7 +141,7 @@ class FriendsFragment(private val userId: String) : Fragment() {
             Constants.ACCEPT_FRIEND_REQUEST_EVENT,
             friend.id,
             userId,
-            String(keyPair.public.encoded)
+            keyPair.public.encoded
         )
     }
 
@@ -151,7 +151,7 @@ class FriendsFragment(private val userId: String) : Fragment() {
             Constants.FRIEND_REQUEST_EVENT,
             userId,
             friend.id,
-            String(keyPair.public.encoded)
+            keyPair.public.encoded
         )
     }
 

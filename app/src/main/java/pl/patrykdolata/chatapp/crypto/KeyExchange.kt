@@ -25,7 +25,6 @@ import kotlin.experimental.and
 class KeyExchange @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun generateKeyPair(userId: String, friendId: String, spec: DHParameterSpec? = null): KeyPair {
-        println("generating keypair for $userId")
         val keyPairGenerator: KeyPairGenerator =
             KeyPairGenerator.getInstance("DH")
         if (spec != null) {
@@ -46,8 +45,6 @@ class KeyExchange @Inject constructor(@ApplicationContext private val context: C
         userId: String,
         friendId: String
     ) {
-        println("doKeyExchangeFromSenderKey for $userId")
-        println("byteArray $encodedSenderPublicKey")
         val senderPublicKey = getSenderPublicKey(encodedSenderPublicKey)
         val dhParamFromSenderPublicKey: DHParameterSpec = (senderPublicKey as DHPublicKey).params
 
@@ -61,13 +58,11 @@ class KeyExchange @Inject constructor(@ApplicationContext private val context: C
         userId: String,
         friendId: String
     ) {
-        println("doAgreements for $userId")
         val keyAgreement: KeyAgreement = KeyAgreement.getInstance("DH")
         keyAgreement.init(keyPair.private)
 
         keyAgreement.doPhase(senderPublicKey, true)
         val secret = keyAgreement.generateSecret()
-        println("secret = ${toHexString(secret)}")
         saveObject(secret, userId, friendId, "secret")
     }
 
@@ -78,17 +73,25 @@ class KeyExchange @Inject constructor(@ApplicationContext private val context: C
     }
 
     fun getKeyPair(userId: String, friendId: String): KeyPair {
+        return getObject(userId, friendId, "key", KeyPair::class.java)
+    }
+
+    fun getSecret(userId: String, friendId: String): ByteArray {
+        return getObject(userId, friendId, "secret", ByteArray::class.java)
+    }
+
+    private fun <T> getObject(userId: String, friendId: String, type: String, klazz: Class<T>): T {
         val shared =
             context.getSharedPreferences("pl.patrykdolata.chatapp.prefs.keys", Context.MODE_PRIVATE)
-        val bytes: ByteArray = shared.getString("${userId}/${friendId}/key", "{}")!!.toByteArray()
+        val bytes: ByteArray =
+            shared.getString("${userId}/${friendId}/${type}", "{}")!!.toByteArray()
         val byteArray = ByteArrayInputStream(bytes)
         val b64InputStream = Base64InputStream(byteArray, Base64.DEFAULT)
         val objIn = ObjectInputStream(b64InputStream)
-        return objIn.readObject() as KeyPair
+        return objIn.readObject() as T
     }
 
     private fun saveObject(obj: Any, userId: String, friendId: String, type: String) {
-        println("save keypair for $userId")
         val shared =
             context.getSharedPreferences("pl.patrykdolata.chatapp.prefs.keys", Context.MODE_PRIVATE)
         val editor = shared.edit()

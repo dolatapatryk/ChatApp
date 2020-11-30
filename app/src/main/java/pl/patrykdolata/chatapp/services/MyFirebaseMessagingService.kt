@@ -7,6 +7,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import pl.patrykdolata.chatapp.ChatApplication
 import pl.patrykdolata.chatapp.commands.*
 import pl.patrykdolata.chatapp.crypto.KeyExchange
+import pl.patrykdolata.chatapp.crypto.MessageCrypto
 import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.utils.Constants
@@ -21,6 +22,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var keyExchange: KeyExchange
+
+    @Inject
+    lateinit var messageCrypto: MessageCrypto
     private lateinit var db: AppDatabase
     private var messageReceivers: Map<String, FcmCommand> = mapOf()
 
@@ -55,12 +59,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun initializeCommands() {
         if (messageReceivers.isEmpty()) {
             messageReceivers = mapOf(
-                Constants.NEW_MESSAGE_TYPE to NewMessageCommand(notificationService, db),
+                Constants.NEW_MESSAGE_TYPE to NewMessageCommand(
+                    notificationService,
+                    db,
+                    messageCrypto
+                ),
                 Constants.FRIEND_REQUEST_TYPE to FriendRequestCommand(
                     notificationService,
                     keyExchange
                 ),
-                Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(notificationService, keyExchange),
+                Constants.FRIEND_ACCEPTED_TYPE to FriendAcceptedCommand(
+                    notificationService,
+                    keyExchange
+                ),
                 Constants.KEY_EXCHANGE_REQUEST_TYPE to KeyExchangeRequestCommand(notificationService)
             )
         }

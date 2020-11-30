@@ -6,15 +6,19 @@ import android.content.Intent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pl.patrykdolata.chatapp.activities.ConversationActivity
+import pl.patrykdolata.chatapp.crypto.EncryptedText
+import pl.patrykdolata.chatapp.crypto.MessageCrypto
 import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.entitites.Conversation
 import pl.patrykdolata.chatapp.entitites.Message
 import pl.patrykdolata.chatapp.models.FcmData
 import pl.patrykdolata.chatapp.services.NotificationService
+import pl.patrykdolata.chatapp.utils.JsonUtils
 
 class NewMessageCommand(
     private val notificationService: NotificationService,
-    private val db: AppDatabase
+    private val db: AppDatabase,
+    private val messageCrypto: MessageCrypto
 ) : FcmCommand() {
 
     override fun executeCommandBackground(context: Context, data: FcmData) {
@@ -42,11 +46,18 @@ class NewMessageCommand(
 
     private fun saveNewMessage(data: FcmData) = GlobalScope.launch {
         val conversation = getConversationFromDb(data)
+        val params = JsonUtils.fromJson(data.params!!, ByteArray::class.java)
+        val encryptedText = JsonUtils.fromJson(data.text!!, ByteArray::class.java)
+        val decrypted = messageCrypto.decryptMessage(
+            EncryptedText(encryptedText!!, params!!),
+            data.toUserId,
+            data.fromUserId
+        )
         val message = Message(
-            conversation.id, data.fromUserId, data.toUserId, data.text!!, data.timestamp
+            conversation.id, data.fromUserId, data.toUserId, decrypted, data.timestamp
         )
         db.messageDao().insert(message)
-        db.conversationDao().updateLastInteraction(conversation.id, data.timestamp, data.text)
+        db.conversationDao().updateLastInteraction(conversation.id, data.timestamp, decrypted)
     }
 
     private suspend fun getConversationFromDb(data: FcmData): Conversation {

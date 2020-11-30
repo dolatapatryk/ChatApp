@@ -10,19 +10,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.conversation_activity.*
 import kotlinx.coroutines.launch
 import pl.patrykdolata.chatapp.R
 import pl.patrykdolata.chatapp.adapters.MessagePagingAdapter
+import pl.patrykdolata.chatapp.crypto.EncryptedMessage
+import pl.patrykdolata.chatapp.crypto.MessageCrypto
 import pl.patrykdolata.chatapp.db.AppDatabase
 import pl.patrykdolata.chatapp.entitites.Conversation
 import pl.patrykdolata.chatapp.entitites.Message
 import pl.patrykdolata.chatapp.models.Friend
 import pl.patrykdolata.chatapp.services.SocketService
 import pl.patrykdolata.chatapp.utils.Constants
+import pl.patrykdolata.chatapp.utils.JsonUtils
 import pl.patrykdolata.chatapp.viewmodels.MessageViewModel
 import pl.patrykdolata.chatapp.viewmodels.MessageViewModelFactory
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ConversationActivity : AppCompatActivity() {
 
     companion object {
@@ -32,6 +38,9 @@ class ConversationActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var viewModel: MessageViewModel
     private lateinit var conversation: Conversation
+
+    @Inject
+    lateinit var messageCrypto: MessageCrypto
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,11 +128,20 @@ class ConversationActivity : AppCompatActivity() {
         if (SocketService.isConnected()) {
             val text = messageEditText.text.toString()
             Log.d(TAG, "New message text: $text")
+            val encryptedText =
+                messageCrypto.encryptMessage(text, conversation.userId, conversation.friendId)
+            val messageToSend = EncryptedMessage(
+                conversation.userId,
+                conversation.friendId,
+                JsonUtils.toJson(encryptedText.text),
+                JsonUtils.toJson(encryptedText.params),
+                System.currentTimeMillis()
+            )
             val message = newMessage(text)
             SocketService.once(Constants.NEW_MESSAGE_RESPONSE_EVENT) { args ->
                 onNewMessageResponse(args, message)
             }
-            SocketService.emit(Constants.NEW_MESSAGE_EVENT, message)
+            SocketService.emit(Constants.NEW_MESSAGE_EVENT, messageToSend)
         } else {
             makeMessageSendFailedToast()
         }

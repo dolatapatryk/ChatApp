@@ -33,7 +33,6 @@ abstract class FriendCommand(private val notificationService: NotificationServic
     }
 
     override fun executeCommandForeground(context: Context, data: FcmData) {
-        println(data)
         doKeyExchangeOperations(data)
         val handler = Handler(Looper.getMainLooper())
         handler.post {
