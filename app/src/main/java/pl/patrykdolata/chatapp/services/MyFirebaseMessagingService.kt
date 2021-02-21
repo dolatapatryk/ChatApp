@@ -41,8 +41,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        println("dostałem mesydż, że trzeba robić rzeczy")
-        println("isInBackground? = " + ChatApplication.isInBackground)
         initializeDb()
         initializeCommands()
         if (message.data.isNotEmpty()) {

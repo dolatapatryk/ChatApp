@@ -63,7 +63,6 @@ class LoginActivity : AppCompatActivity() {
                         FirebaseMessaging.getInstance().token.addOnCompleteListener { token ->
                             if (token.isSuccessful) {
                                 val tokenString = token.result ?: ""
-                                println("token - $tokenString")
                                 SocketService.emit(Constants.LOGIN_EVENT, userId, tokenString)
                             }
                         }

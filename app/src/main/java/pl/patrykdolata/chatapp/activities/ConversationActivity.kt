@@ -93,7 +93,6 @@ class ConversationActivity : AppCompatActivity() {
             db.conversationDao().getByUserIdAndFriendId(userId = userId, friendId = friend.id)
 
         return if (existingConversation == null) {
-            Log.d(TAG, "TWORZE NOWĄ KONWERSACJE W BAZIE")
             val toAdd =
                 Conversation(
                     userId,
@@ -118,8 +117,6 @@ class ConversationActivity : AppCompatActivity() {
             }
         })
         viewModel.getMessages().observe(this, { messages ->
-            Log.d(TAG, "NOWE MESEDŻE")
-            messages.forEach { Log.d(TAG, it.toString()) }
             if (messages != null) adapter.submitList(messages)
         })
     }
@@ -127,7 +124,6 @@ class ConversationActivity : AppCompatActivity() {
     private fun send() {
         if (SocketService.isConnected()) {
             val text = messageEditText.text.toString()
-            Log.d(TAG, "New message text: $text")
             val encryptedText =
                 messageCrypto.encryptMessage(text, conversation.userId, conversation.friendId)
             val messageToSend = EncryptedMessage(
@@ -150,7 +146,6 @@ class ConversationActivity : AppCompatActivity() {
 
     private fun onNewMessageResponse(args: Array<Any>, newMessage: Message) {
         val result = args[0] as Int
-        Log.d(TAG, "result = $result")
         if (result == 1) {
             viewModel.sendMessage(newMessage)
             runOnUiThread { messageEditText.text = null }

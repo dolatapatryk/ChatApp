@@ -47,8 +47,6 @@ class FriendsFragment(private val userId: String) : Fragment() {
         val view: View = inflater.inflate(R.layout.friends_fragment, container, false)
         initFieldsFromView(view)
 
-        println("fragment friends for user: $userId")
-
         pendingRecyclerView.layoutManager = LinearLayoutManager(activity)
         friendsRecyclerView.layoutManager = LinearLayoutManager(activity)
         searchRecyclerView.layoutManager = LinearLayoutManager(activity)
